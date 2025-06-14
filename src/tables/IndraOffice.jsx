@@ -1,10 +1,9 @@
 import Pagination from "../components/pagination/Pagination";
-import Sidebar from "../layout/Aside/sidebar";
+
 //                   </a>
 function IndraOffice({ officeIndra }) {
   return (
     <div className="flex flex-col justify-center items-center w-full h-full p-4 gap-10">
-      <Sidebar />
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-[#E3E2DA] uppercase bg-[#004254] dark:bg-[#004254] dark:text-[#E3E2DA]">
