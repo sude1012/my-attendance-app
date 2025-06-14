@@ -3,7 +3,6 @@ import TimekeepingMonitoring from "../components/headers/TimekeepingMonitoring";
 import Footer from "./Footer";
 import useDocument from "../hooks/useDocument";
 import { useAttendance } from "../hooks/useAttendance";
-
 function AttendanceMonitoring() {
   useDocument("Attendance Monitoring | Indra Business Analyst");
   const { indraTimelogs } = useAttendance();
