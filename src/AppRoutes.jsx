@@ -31,4 +31,3 @@ function AppRoutes({ indra }) {
 }
 
 export default AppRoutes;
- 

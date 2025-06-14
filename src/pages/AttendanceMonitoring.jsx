@@ -2,7 +2,6 @@ import IndraLogo from "../components/logo and images/IndraLogo";
 import TimekeepingMonitoring from "../components/headers/TimekeepingMonitoring";
 import Footer from "./Footer";
 import useDocument from "../hooks/useDocument";
-import Sidebar from "../layout/sidebar.jsx/sidebar";
 import { useAttendance } from "../hooks/useAttendance";
 
 function AttendanceMonitoring() {

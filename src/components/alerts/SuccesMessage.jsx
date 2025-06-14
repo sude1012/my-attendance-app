@@ -1,4 +1,4 @@
-function Success({ children }) {
+function SuccesMessage({ children }) {
   return (
     <div
       className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 shadow-lg"
@@ -20,4 +20,4 @@ function Success({ children }) {
     </div>
   );
 }
-export default Success;
+export default SuccesMessage;

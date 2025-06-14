@@ -10,6 +10,12 @@ if (process.env.NODE_ENV === "production") {
 } else if (process.env.NODE_ENV === "test") {
   dotenv.config({ path: ".env.test" });
   console.log("Using TEST environment variables");
+  console.log(
+    "Connecting to DB:",
+    process.env.DB_HOST,
+    process.env.DB_USER,
+    process.env.DB_NAME
+  );
 } else {
   dotenv.config(); // defaults to .env
 }
@@ -17,7 +23,7 @@ const { Pool } = pkg;
 
 const pool = new Pool({
   user: process.env.DB_USER,
-  host: process.env.DB_HOST,
+  host: process.env.DB_HOST, // <-- this must be from env
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,

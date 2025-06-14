@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 // Great to hear that it's working after restarting the server and React app! 🎉
 
 // This is a common step when you:
@@ -16,7 +17,7 @@ import cors from "cors"; // Import the cors middleware
 import ExcelJS from "exceljs"; // Add this at the top if using ES modules
 
 const app = express();
-const PORT = 5050;
+const PORT = process.env.PORT || 5050;
 
 // Enable CORS for all routes
 
@@ -318,6 +319,9 @@ ORDER BY t.date DESC, t.time_in ASC;`);
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on http://0.0.0.0:${PORT}`);
 });
+// app.listen(PORT, () => {
+//   console.log(`Server running on http://localhost:${PORT}`);
+// });

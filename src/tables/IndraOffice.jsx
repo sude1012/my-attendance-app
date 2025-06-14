@@ -1,10 +1,9 @@
-import Pagination from "../components/pagination/pagination";
-import Sidebar from "../layout/sidebar.jsx/sidebar";
+import Pagination from "../components/pagination/Pagination";
+
 //                   </a>
 function IndraOffice({ officeIndra }) {
   return (
     <div className="flex flex-col justify-center items-center w-full h-full p-4 gap-10">
-      <Sidebar />
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-[#E3E2DA] uppercase bg-[#004254] dark:bg-[#004254] dark:text-[#E3E2DA]">
@@ -33,15 +32,6 @@ function IndraOffice({ officeIndra }) {
                 </td>
                 <td className="px-6 py-4">{log.office_name}</td>
                 <td className="px-6 py-4">{log.description}</td>
-
-                {/* <td className="px-6 py-4 text-right hover:text-[#E3E2DA]">
-                  <a
-                    href="#"
-                    className="font-medium text-[#004254] dark:text-[#004254] hover:text-[#E3E2DA] hover:underline"
-                  >
-                    Edit
-                  </a>
-                </td> */}
               </tr>
             ))}
           </tbody>
