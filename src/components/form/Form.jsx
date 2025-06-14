@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PrimaryButton from "../buttons/PrimaryButton";
-import Success from "../alerts/success";
+import Success from "../alerts/SuccessMessage";
 import Error from "../alerts/ErrorMessage";
 import Input from "../input/Input";
 import { toast } from "react-toastify";
