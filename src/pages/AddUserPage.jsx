@@ -3,7 +3,6 @@ import AddUser from "../components/form/AddUser";
 import Footer from "./Footer";
 import useDocument from "../hooks/useDocument";
 import Header from "../components/headers/Header";
-import Sidebar from "../layout/sidebar.jsx/sidebar";
 import { useAttendance } from "../hooks/useAttendance";
 function AddUserPage() {
   useDocument("Add User | Indra Business Analyst");

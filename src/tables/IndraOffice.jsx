@@ -1,4 +1,4 @@
-import Pagination from "../components/pagination/pagination";
+import Pagination from "../components/pagination/Pagination";
 import Sidebar from "../layout/sidebar.jsx/sidebar";
 //                   </a>
 function IndraOffice({ officeIndra }) {
@@ -33,15 +33,6 @@ function IndraOffice({ officeIndra }) {
                 </td>
                 <td className="px-6 py-4">{log.office_name}</td>
                 <td className="px-6 py-4">{log.description}</td>
-
-                {/* <td className="px-6 py-4 text-right hover:text-[#E3E2DA]">
-                  <a
-                    href="#"
-                    className="font-medium text-[#004254] dark:text-[#004254] hover:text-[#E3E2DA] hover:underline"
-                  >
-                    Edit
-                  </a>
-                </td> */}
               </tr>
             ))}
           </tbody>
