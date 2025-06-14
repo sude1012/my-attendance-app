@@ -16,7 +16,7 @@ function AttedancePage({ indra }) {
   return (
     <div className="min-h-screen flex flex-col justify-between items-centers">
       <div className="flex flex-col justify-between items-center">
-        hello
+        <div>Hello World</div>
         <IndraLogo />
         <Header />
       </div>
