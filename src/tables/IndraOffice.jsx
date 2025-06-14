@@ -1,5 +1,5 @@
 import Pagination from "../components/pagination/Pagination";
-import SideBar from "../components/sidebar/Sidebar";
+import Sidebar from "../layout/sidebar.jsx/sidebar";
 //                   </a>
 function IndraOffice({ officeIndra }) {
   return (
