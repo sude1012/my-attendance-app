@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+body {
+  background-color: #e3e2da;
+}
+@layer utilities {
+  /* Hide number input spinners for Chrome, Safari, Edge, Opera */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+
+  /* Hide number input spinners for Firefox and other browsers */
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+}
