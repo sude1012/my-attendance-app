@@ -17,24 +17,6 @@ function App() {
       position: "Business Analyst",
       team: "DMA",
     },
-    {
-      inNumber: 587176,
-      fullName: "Kevin Durant",
-      position: "Business Analyst",
-      team: "DMA",
-    },
-    {
-      inNumber: 587177,
-      fullName: "LeBron James",
-      position: "Business Analyst",
-      team: "DMA",
-    },
-    {
-      inNumber: 587178,
-      fullName: "Luka Doncic",
-      position: "Business Analyst",
-      team: "DMA",
-    },
   ];
 
   return (

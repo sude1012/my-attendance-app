@@ -1,82 +1,48 @@
+
 import { useState, useEffect } from "react";
 import { AttendanceContext } from "./AttendanceContext";
 
 export function AttendanceProvider({ children }) {
-  const [officeIndra, setOfficeIndra] = useState([]);
-  const [indraTeam, setIndraTeam] = useState([]);
-  const [indraShift, setIndraShift] = useState([]);
-  const [indraPersons, setIndraPersons] = useState([]);
-  const [indraTimelogs, setIndraTimelogs] = useState([]);
+  const [attendanceData, setAttendanceData] = useState({
+    officeIndra: [],
+    indraTeam: [],
+    indraShift: [],
+    indraPersons: [],
+    indraTimelogs: [],
+  });
+
+  const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5050";
+
   useEffect(() => {
-    // Fetch the Office
-    fetch("http://localhost:5050/api/indra-office")
-      .then((res) => res.json())
-      .then((data) => {
-        setOfficeIndra(data);
-        // console.log("Indra office data fetched:", data);
-      })
-      .catch((error) => {
-        console.error("Error fetching Indra office:", error);
-      });
-    // Fetch the Position
-    fetch("http://localhost:5050/api/indra-team")
-      .then((res) => res.json())
-      .then((data) => {
-        return data;
-      })
-      .then((data) => {
-        setIndraTeam(data);
-        console.log("Indra persons data fetched:", data);
-      })
-      .catch((error) => {
-        console.error("Error fetching Indra persons:", error);
-      });
-    // Fetch the shift
-    fetch("http://localhost:5050/api/indra-shift")
-      .then((res) => res.json())
-      .then((data) => {
-        return data;
-      })
-      .then((data) => {
-        setIndraShift(data);
-        console.log("Indra persons data fetched:", data);
-      })
-      .catch((error) => {
-        console.error("Error fetching Indra persons:", error);
-      });
-    fetch("http://localhost:5050/api/indra")
-      .then((res) => res.json())
-      .then((data) => {
-        return data;
-      })
-      .then((data) => {
-        setIndraPersons(data);
-        console.log("Indra persons data fetched:", data);
-      })
-      .catch((error) => {
-        console.error("Error fetching Indra persons:", error);
-      });
-    // Fetch the Timelogs
-    fetch("http://localhost:5050/api/timelogs")
-      .then((res) => res.json())
-      .then((data) => {
-        setIndraTimelogs(data);
-        // console.log("Indra office data fetched:", data);
-      })
-      .catch((error) => {
-        console.error("Error fetching timelogs:", error);
-      });
+    const fetchData = async () => {
+      try {
+        const [office, team, shift, persons, timelogs] = await Promise.all([
+          fetch(`${API_BASE}/api/indra-office`).then((res) => res.json()),
+          fetch(`${API_BASE}/api/indra-team`).then((res) => res.json()),
+          fetch(`${API_BASE}/api/indra-shift`).then((res) => res.json()),
+          fetch(`${API_BASE}/api/indra`).then((res) => res.json()),
+          fetch(`${API_BASE}/api/timelogs`).then((res) => res.json()),
+        ]);
+        debugger;
+        setAttendanceData({
+          officeIndra: office,
+          indraTeam: team,
+          indraShift: shift,
+          indraPersons: persons,
+          indraTimelogs: timelogs,
+        });
+
+        console.log("fetchData [ATTENDANCE] LOADED");
+      } catch (error) {
+        console.error("Error fetchData [ATTENDANCE]:", error);
+      }
+    };
+
+    fetchData();
   }, []);
+
   return (
-    <AttendanceContext.Provider
-      value={{
-        officeIndra,
-        indraTeam,
-        indraShift,
-        indraPersons,
-        indraTimelogs,
-      }}
-    >
+    <AttendanceContext.Provider value={attendanceData}>
       {children}
     </AttendanceContext.Provider>
   );
