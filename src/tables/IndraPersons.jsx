@@ -1,5 +1,5 @@
 // import { sampleIndraData } from "../utils/sampleIndraData";
-import Pagination from "../components/pagination/pagination";
+import Pagination from "../components/pagination/Pagination";
 //                   </a>
 function IndraPersons({ indraPersons = [] }) {
   return (
