@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 import pkg from "pg";
-import dotenv from "dotenv";
 
 // Load the correct .env file based on NODE_ENV
 if (process.env.NODE_ENV === "production") {
