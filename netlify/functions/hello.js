@@ -1,4 +1,4 @@
-exports.handler = async (event, context) => {
+export function handler = async (event, context) => {
   return {
     statusCode: 200,
     body: JSON.stringify({ message: "Hello from Netlify Functions!" }),
