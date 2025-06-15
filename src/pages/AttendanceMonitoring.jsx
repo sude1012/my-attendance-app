@@ -6,17 +6,9 @@ import { useAttendance } from "../hooks/useAttendance";
 function AttendanceMonitoring() {
   useDocument("Attendance Monitoring | Indra Business Analyst");
   const { indraTimelogs } = useAttendance();
-
+  debugger
   return (
     <div className="w-screen h-screen flex flex-col justify-between items-center gap-8">
-      <div className="">
-        <a href="/">
-          <IndraLogo />
-        </a>
-      </div>
-      {/* <aside>
-        <Sidebar />
-      </aside> */}
       <div className="flex flex-col justify-center items-center">
         <TimekeepingMonitoring indraTimelogs={indraTimelogs} />
       </div>

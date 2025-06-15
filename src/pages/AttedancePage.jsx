@@ -9,15 +9,15 @@ import Footer from "./Footer";
 import ViewAttendance from "../components/buttons/ViewAttendance";
 import { useAttendance } from "../hooks/useAttendance";
 
-function AttedancePage({ indra }) {
+function AttedancePage() {
   useDocument("Indra Timekeeping From");
   const { officeIndra, indraPersons } = useAttendance();
   return (
     <div className="min-h-screen flex flex-col justify-between items-centers">
-<div className="flex flex-col justify-between items-center">
-  <IndraLogo />
-  <Header />
-</div>
+      <div className="flex flex-col justify-between items-center">
+        <IndraLogo />
+        <Header />
+      </div>
       <div className="">
         <div className="flex flex-col justify-center items-center py-2 m-2">
           <CurrentDate />
@@ -25,7 +25,8 @@ function AttedancePage({ indra }) {
         </div>
         <div className="">
           <Form
-            indra={indra}
+          //removed indra props because it is not used on Formjsx
+            // indra={indra}
             officeIndra={officeIndra}
             indraPersons={indraPersons}
           />
