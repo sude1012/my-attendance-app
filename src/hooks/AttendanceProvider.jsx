@@ -20,7 +20,7 @@ export function AttendanceProvider({ children }) {
           fetch(`${API_BASE}/api/indra-team`).then((res) => res.json()),
           fetch(`${API_BASE}/api/indra-shift`).then((res) => res.json()),
           fetch(`${API_BASE}/api/indra`).then((res) => res.json()),
-          fetch(`${API_BASE}/api/timelogs`).then((res) => res.json()),
+          fetch(`${API_BASE}/timelogs`).then((res) => res.json()),
         ]);
 
         setAttendanceData({
