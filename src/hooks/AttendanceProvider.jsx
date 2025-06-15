@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { AttendanceContext } from "./AttendanceContext";
 
@@ -23,7 +22,7 @@ export function AttendanceProvider({ children }) {
           fetch(`${API_BASE}/api/indra`).then((res) => res.json()),
           fetch(`${API_BASE}/api/timelogs`).then((res) => res.json()),
         ]);
-        debugger;
+
         setAttendanceData({
           officeIndra: office,
           indraTeam: team,
@@ -39,7 +38,7 @@ export function AttendanceProvider({ children }) {
     };
 
     fetchData();
-  }, []);
+  }, [API_BASE]);
 
   return (
     <AttendanceContext.Provider value={attendanceData}>
