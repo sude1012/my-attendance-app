@@ -14,10 +14,10 @@ function AttedancePage({ indra }) {
   const { officeIndra, indraPersons } = useAttendance();
   return (
     <div className="min-h-screen flex flex-col justify-between items-centers">
-<div className="flex flex-col justify-between items-center">
-  <IndraLogo />
-  <Header />
-</div>
+      <div className="flex flex-col justify-between items-center">
+        <IndraLogo />
+        <Header />
+      </div>
       <div className="">
         <div className="flex flex-col justify-center items-center py-2 m-2">
           <CurrentDate />
