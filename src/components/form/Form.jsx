@@ -6,6 +6,7 @@ import Input from "../input/Input";
 import { toast } from "react-toastify";
 
 function Form({ indraPersons = [] }) {
+  const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5050";
   const [fullName, setFullName] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -48,7 +49,7 @@ function Form({ indraPersons = [] }) {
       console.log("Adding timekeeping data:", addTimekeep); //Debugging log
       // Here you would typically send the timekeeping data to your backend
       // Send the timekeeping data to the backend
-      fetch("http://localhost:5050/add-timekeeping", {
+      fetch(`${API_BASE}/add-timekeeping`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(addTimekeep),
@@ -111,7 +112,7 @@ function Form({ indraPersons = [] }) {
     try {
       // Fetch latest time log for this user and date
       const res = await fetch(
-        `http://localhost:5050/latest-timein?indra_number=${indra_number}&date=${currentDate}`
+        `${API_BASE}/latest-timein?indra_number=${indra_number}&date=${currentDate}`
       );
       const { time_in, time_out } = await res.json();
 
