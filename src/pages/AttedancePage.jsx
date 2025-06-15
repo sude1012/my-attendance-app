@@ -9,7 +9,7 @@ import Footer from "./Footer";
 import ViewAttendance from "../components/buttons/ViewAttendance";
 import { useAttendance } from "../hooks/useAttendance";
 
-function AttedancePage({ indra }) {
+function AttedancePage() {
   useDocument("Indra Timekeeping From");
   const { officeIndra, indraPersons } = useAttendance();
   return (
@@ -25,7 +25,8 @@ function AttedancePage({ indra }) {
         </div>
         <div className="">
           <Form
-            indra={indra}
+          //removed indra props because it is not used on Formjsx
+            // indra={indra}
             officeIndra={officeIndra}
             indraPersons={indraPersons}
           />

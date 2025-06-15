@@ -1,7 +1,7 @@
 import { Route, Routes, BrowserRouter } from "react-router-dom";
-import { AttendanceContext } from "./hooks/AttendanceContext";
 import AppRoutes from "./AppRoutes";
 import "./App.css";
+import { AttendanceProvider } from "./hooks/AttendanceProvider";
 
 function App() {
   return (
