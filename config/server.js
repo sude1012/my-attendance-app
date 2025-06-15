@@ -79,7 +79,7 @@ limit 12 OFFSET 0;`);
     console.error("Error fetching timelogs:", err);
     res
       .status(500)
-      .send({ error: "Can't fetch time logs", details: err.message });
+      .json({ error: "Can't fetch time logs", details: err.message });
   }
 });
 
