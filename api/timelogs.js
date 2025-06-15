@@ -30,19 +30,6 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }, // Required for Supabase
 });
 
-import pkg from "pg";
-const { Pool } = pkg;
-
-// Pool config: Vercel injects env vars, no dotenv needed
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-  ssl: { rejectUnauthorized: false }, // Required for Supabase
-});
-
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
