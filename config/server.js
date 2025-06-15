@@ -223,7 +223,7 @@ app.get("/api/indra-shift", async (req, res) => {
     console.log("Shift data:", result.rows); // Debug
     res.json(result.rows);
   } catch (err) {
-    console.error("Error fetching Indra Team Data:", err);
+    console.error("Error fetching Indra Shift Data:", err);
     res.status(500).send("Server Error");
   }
 });
