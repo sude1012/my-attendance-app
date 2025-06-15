@@ -25,7 +25,6 @@ app.use(cors());
 app.use(express.json()); // Enables JSON body parsing
 app.use(express.urlencoded({ extended: true })); // Handles form data
 import { body, validationResult } from "express-validator";
-import { details } from "framer-motion/client";
 
 // API endpoint to fetch users
 app.get("/api/indra", async (req, res) => {
