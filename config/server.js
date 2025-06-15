@@ -25,6 +25,7 @@ app.use(cors());
 app.use(express.json()); // Enables JSON body parsing
 app.use(express.urlencoded({ extended: true })); // Handles form data
 import { body, validationResult } from "express-validator";
+import { details } from "framer-motion/client";
 
 // API endpoint to fetch users
 app.get("/api/indra", async (req, res) => {
@@ -77,7 +78,9 @@ limit 12 OFFSET 0;`);
     res.json(result.rows); // Send the data as JSON
   } catch (err) {
     console.error("Error fetching timelogs:", err);
-    res.status(500).send("Server Error");
+    res
+      .status(500)
+      .send({ error: "Can't fetch time logs", details: err.message });
   }
 });
 
