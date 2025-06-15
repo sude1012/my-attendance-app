@@ -7,7 +7,6 @@ function App() {
   return (
     <BrowserRouter>
       {/* relocate provider because you have redundant context provider*/}
-
       <AttendanceProvider>
         <Routes>
           <Route path="/*" element={<AppRoutes />} />
