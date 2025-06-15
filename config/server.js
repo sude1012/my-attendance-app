@@ -225,7 +225,7 @@ app.get("/api/indra-shift", async (req, res) => {
     console.log("Shift data:", result.rows); // Debug
     res.json(result.rows);
   } catch (err) {
-    console.error("Error fetching Indra Team Data:", err);
+    console.error("Error fetching Indra Shift Data:", err);
     res.status(500).send("Server Error");
   }
 });
@@ -321,9 +321,9 @@ ORDER BY t.date DESC, t.time_in ASC;`);
   }
 });
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on http://0.0.0.0:${PORT}`);
-});
-// app.listen(PORT, () => {
-//   console.log(`Server running on http://localhost:${PORT}`);
+// app.listen(PORT, "0.0.0.0", () => {
+//   console.log(`Server running on http://0.0.0.0:${PORT}`);
 // });
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
