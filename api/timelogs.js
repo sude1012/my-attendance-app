@@ -30,35 +30,52 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }, // Required for Supabase
 });
 
+import pkg from "pg";
+const { Pool } = pkg;
 
-export default async function hanlder(req, res) {
+// Pool config: Vercel injects env vars, no dotenv needed
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+  ssl: { rejectUnauthorized: false }, // Required for Supabase
+});
+
+export default async function handler(req, res) {
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
   try {
-    const result = await pool.query(`SELECT
-  t.time_keeping_id,
-  t.date,
-  i.indra_number,
-  i.full_name,
-  s.shift_name,
-  s.start_time,
-  t.time_in,
-  t.time_out,
-  ROUND(
-  CASE
-        WHEN t.time_in > (s.start_time::TIME + INTERVAL '15 minutes') THEN
-            EXTRACT(EPOCH FROM (t.time_in - s.start_time::TIME)) / 60
-        ELSE 0
-    END,2
-  )  AS minutes_late,
-  t.status
-FROM
-  time_logs t
-JOIN
-  indra_table i ON t.indra_number = i.indra_number
-JOIN
-  shifts s ON t.shift_id = s.shift_id
-ORDER BY t.date DESC, t.time_in ASC
-limit 12 OFFSET 0;`);
-    res.json(result.rows); // Send the data as JSON
+    const result = await pool.query(`
+      SELECT
+        t.time_keeping_id,
+        t.date,
+        i.indra_number,
+        i.full_name,
+        s.shift_name,
+        s.start_time,
+        t.time_in,
+        t.time_out,
+        ROUND(
+          CASE
+            WHEN t.time_in > (s.start_time::TIME + INTERVAL '15 minutes') THEN
+              EXTRACT(EPOCH FROM (t.time_in - s.start_time::TIME)) / 60
+            ELSE 0
+          END,2
+        ) AS minutes_late,
+        t.status
+      FROM
+        time_logs t
+      JOIN
+        indra_table i ON t.indra_number = i.indra_number
+      JOIN
+        shifts s ON t.shift_id = s.shift_id
+      ORDER BY t.date DESC, t.time_in ASC
+      LIMIT 12 OFFSET 0;
+    `);
+    res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error fetching timelogs:", err);
     res
@@ -66,4 +83,3 @@ limit 12 OFFSET 0;`);
       .json({ error: "Can't fetch time logs", details: err.message });
   }
 }
-  
