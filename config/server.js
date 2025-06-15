@@ -17,7 +17,7 @@ import cors from "cors"; // Import the cors middleware
 import ExcelJS from "exceljs"; // Add this at the top if using ES modules
 
 const app = express();
-const PORT = process.env.PORT || 5050;
+const PORT = process.env.PORT || 1000;
 
 // Enable CORS for all routes
 
