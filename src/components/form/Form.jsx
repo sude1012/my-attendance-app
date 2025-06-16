@@ -4,6 +4,7 @@ import Error from "../alerts/ErrorMessage";
 import SuccesMessage from "../alerts/SuccesMessage";
 import Input from "../input/Input";
 import { toast } from "react-toastify";
+import { useAttendance } from "../../hooks/useAttendance";
 
 function Form({ indraPersons = [] }) {
   const [fullName, setFullName] = useState("");
@@ -12,7 +13,7 @@ function Form({ indraPersons = [] }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorCode, setErrorCode] = useState(null);
-
+  const { currentDate } = useAttendance();
   function handleTimeIn(e) {
     if (e) e.preventDefault();
 
@@ -21,7 +22,6 @@ function Form({ indraPersons = [] }) {
       minute: "2-digit",
       second: "2-digit",
     });
-    const currentDate = new Date().toLocaleDateString("en-CA");
     console.log(`The ${fullName} Time In is ${currentTime} on ${currentDate}`);
     // Check if fullName is empty
     if (!fullName) {
@@ -95,7 +95,6 @@ function Form({ indraPersons = [] }) {
       minute: "2-digit",
       second: "2-digit",
     });
-    const currentDate = new Date().toISOString().slice(0, 10);
 
     if (!fullName) {
       setShowError(true);
