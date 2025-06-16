@@ -64,7 +64,6 @@ function TimekeepingMonitoring({ indraTimelogs }) {
                   <td className="px-6 py-4">{log.shift_name}</td>
                   <td className="px-6 py-4">{log.time_in}</td>
                   <td className="px-6 py-4">{log.time_out}</td>
-                  {/* <td className="px-6 py-4">{log.minutes_late}</td> */}
                   <td className="px-6 py-4">{log.status}</td>
                 </tr>
               ))
