@@ -18,23 +18,6 @@ if (process.env.NODE_ENV === "production") {
   dotenv.config(); // defaults to .env
 }
 
-// Load the correct .env file based on NODE_ENV
-if (process.env.NODE_ENV === "production") {
-  dotenv.config({ path: ".env.prod" });
-  console.log("Using PRODUCTION environment variables");
-} else if (process.env.NODE_ENV === "test") {
-  dotenv.config({ path: ".env.test" });
-  console.log("Using TEST environment variables");
-  console.log(
-    "Connecting to DB:",
-    process.env.DB_HOST,
-    process.env.DB_USER,
-    process.env.DB_NAME
-  );
-} else {
-  dotenv.config(); // defaults to .env
-}
-
 const { Pool } = pkg;
 
 const pool = new Pool({
