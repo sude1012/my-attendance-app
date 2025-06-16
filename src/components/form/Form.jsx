@@ -22,7 +22,9 @@ function Form({ indraPersons = [] }) {
       minute: "2-digit",
       second: "2-digit",
     });
-    console.log(`The ${fullName} Time In is ${currentTime} on ${currentDate}`);
+    const dateString = currentDate.toLocaleDateString("en-CA"); // "2025-06-16"
+    console.log(`The ${fullName} Time In is ${currentTime}`);
+    console.log(`The ${fullName} Date ${currentDate}`);
     // Check if fullName is empty
     if (!fullName) {
       // Show error message if fullName is empty
@@ -42,7 +44,7 @@ function Form({ indraPersons = [] }) {
         shift_id: 1,
         time_in: currentTime,
         time_out: null,
-        date: currentDate,
+        date: dateString, // Use the formatted date string
         status: "On-Site",
       };
       console.log("Adding timekeeping data:", addTimekeep); //Debugging log
@@ -95,6 +97,8 @@ function Form({ indraPersons = [] }) {
       minute: "2-digit",
       second: "2-digit",
     });
+    const dateString = currentDate.toLocaleDateString("en-CA"); // <-- Add this line;
+    console.log(`The ${fullName}! today is ${dateString}`);
 
     if (!fullName) {
       setShowError(true);
@@ -110,9 +114,16 @@ function Form({ indraPersons = [] }) {
     try {
       // Fetch latest time log for this user and date
       const res = await fetch(
-        `http://localhost:5050/latest-timein?indra_number=${indra_number}&date=${currentDate}`
+        `http://localhost:5050/latest-timein?indra_number=${indra_number}&date=${dateString}`
       );
       const { time_in, time_out } = await res.json();
+      if (!dateString) {
+        console.log("No current date selected");
+        setShowError(true);
+        setErrorMessage("Please select a valid date.");
+        setTimeout(() => setShowError(false), 2000);
+        return;
+      }
 
       // Validation: Check if user has not timed in yet
       if (!time_in) {
@@ -135,7 +146,7 @@ function Form({ indraPersons = [] }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           indra_number,
-          date: currentDate,
+          date: dateString,
           time_in,
           time_out: currentTime,
           status: "On-Site",
