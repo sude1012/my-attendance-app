@@ -21,7 +21,7 @@ function Form({ indraPersons = [] }) {
       minute: "2-digit",
       second: "2-digit",
     });
-    const currentDate = new Date().toISOString().slice(0, 10);
+    const currentDate = new Date().toLocaleDateString("en-CA");
     console.log(`The ${fullName} Time In is ${currentTime} on ${currentDate}`);
     // Check if fullName is empty
     if (!fullName) {
@@ -171,9 +171,9 @@ function Form({ indraPersons = [] }) {
     <div className="flex flex-row justify-center items-center">
       <form className="flex flex-col justify-center items-center">
         {showSuccess && (
-          <Success message={showSuccess}>
+          <SuccesMessage message={showSuccess}>
             {successMessage || "Successfully Timed In/Out"}
-          </Success>
+          </SuccesMessage>
         )}
         {showError && (
           <Error>
