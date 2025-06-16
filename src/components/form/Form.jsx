@@ -115,7 +115,7 @@ function Form({ indraPersons = [] }) {
     try {
       // Fetch latest time log for this user and date
       const res = await fetch(
-        `${API_BASE}/latest-timein?indra_number=${indra_number}&date=${currentDate}`
+        `${API_BASE}/latest-timein?indra_number=${indra_number}&date=${dateString}`
       );
       const { time_in, time_out } = await res.json();
       if (!dateString) {
