@@ -10,6 +10,22 @@ export function AttendanceProvider({ children }) {
     indraTimelogs: [],
   });
 
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentDate(new Date());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const newDate = setInterval(() => {
+      setCurrentDate(new Date());
+    }, 1000);
+    return () => clearInterval(newDate);
+  }, []);
+
   const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5050";
 
   useEffect(() => {
@@ -41,7 +57,7 @@ export function AttendanceProvider({ children }) {
   }, [API_BASE]);
 
   return (
-    <AttendanceContext.Provider value={attendanceData}>
+    <AttendanceContext.Provider value={{ ...attendanceData, currentDate }}>
       {children}
     </AttendanceContext.Provider>
   );

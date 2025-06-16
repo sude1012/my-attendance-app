@@ -1,20 +1,17 @@
-import { useEffect, useState } from "react";
+import { useAttendance } from "../../hooks/useAttendance";
 
 function CurrentDate() {
-  const [currentDate, setCurrentDate] = useState(new Date());
-
-  useEffect(() => {
-    const newDate = setInterval(() => {
-      setCurrentDate(new Date());
-    }, 1000);
-    return () => clearInterval(newDate);
-  }, []);
   // Format the date to "Month Day, Year"
+  const { currentDate } = useAttendance();
+  if (!currentDate) {
+    return <div>Error: Current date is not available</div>;
+  }
   const formattedDate = currentDate.toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
   });
+
   return (
     <div className="flex flex-col justify-center items-center m-2">
       <h1

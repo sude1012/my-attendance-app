@@ -4,6 +4,7 @@ import Error from "../alerts/ErrorMessage";
 import SuccesMessage from "../alerts/SuccesMessage";
 import Input from "../input/Input";
 import { toast } from "react-toastify";
+import { useAttendance } from "../../hooks/useAttendance";
 
 function Form({ indraPersons = [] }) {
   const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5050";
@@ -13,7 +14,7 @@ function Form({ indraPersons = [] }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorCode, setErrorCode] = useState(null);
-
+  const { currentDate } = useAttendance();
   function handleTimeIn(e) {
     if (e) e.preventDefault();
 
@@ -22,8 +23,9 @@ function Form({ indraPersons = [] }) {
       minute: "2-digit",
       second: "2-digit",
     });
-    const currentDate = new Date().toISOString().slice(0, 10);
-    console.log(`The ${fullName} Time In is ${currentTime} on ${currentDate}`);
+    const dateString = currentDate.toLocaleDateString("en-CA"); // "2025-06-16"
+    console.log(`The ${fullName} Time In is ${currentTime}`);
+    console.log(`The ${fullName} Date ${currentDate}`);
     // Check if fullName is empty
     if (!fullName) {
       // Show error message if fullName is empty
@@ -43,7 +45,7 @@ function Form({ indraPersons = [] }) {
         shift_id: 1,
         time_in: currentTime,
         time_out: null,
-        date: currentDate,
+        date: dateString, // Use the formatted date string
         status: "On-Site",
       };
       console.log("Adding timekeeping data:", addTimekeep); //Debugging log
@@ -96,7 +98,8 @@ function Form({ indraPersons = [] }) {
       minute: "2-digit",
       second: "2-digit",
     });
-    const currentDate = new Date().toISOString().slice(0, 10);
+    const dateString = currentDate.toLocaleDateString("en-CA"); // <-- Add this line;
+    console.log(`The ${fullName}! today is ${dateString}`);
 
     if (!fullName) {
       setShowError(true);
@@ -115,6 +118,13 @@ function Form({ indraPersons = [] }) {
         `${API_BASE}/latest-timein?indra_number=${indra_number}&date=${currentDate}`
       );
       const { time_in, time_out } = await res.json();
+      if (!dateString) {
+        console.log("No current date selected");
+        setShowError(true);
+        setErrorMessage("Please select a valid date.");
+        setTimeout(() => setShowError(false), 2000);
+        return;
+      }
 
       // Validation: Check if user has not timed in yet
       if (!time_in) {
@@ -137,7 +147,7 @@ function Form({ indraPersons = [] }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           indra_number,
-          date: currentDate,
+          date: dateString,
           time_in,
           time_out: currentTime,
           status: "On-Site",
@@ -172,9 +182,9 @@ function Form({ indraPersons = [] }) {
     <div className="flex flex-row justify-center items-center">
       <form className="flex flex-col justify-center items-center">
         {showSuccess && (
-          <Success message={showSuccess}>
+          <SuccesMessage message={showSuccess}>
             {successMessage || "Successfully Timed In/Out"}
-          </Success>
+          </SuccesMessage>
         )}
         {showError && (
           <Error>
