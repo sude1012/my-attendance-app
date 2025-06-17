@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PrimaryButton from "../buttons/PrimaryButton";
-// import { toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { useAttendance } from "../../hooks/useAttendance";
 
 function AddTimelogs() {
@@ -26,18 +26,6 @@ function AddTimelogs() {
   }
   function handleSubmit(e) {
     e.preventDefault();
-    console.log(
-      "Submitting form with Indra Person Form Context:",
-      indraPersons
-    );
-
-    console.log("Addition Timelogs:", additionTimelogs);
-    console.log("indraPersons:", indraPersons);
-    console.log("additionTimelog:", additionTimelogs.indra_number);
-    console.log("selected Indra Number:", selectedIndraNumber);
-    console.log("Selected FullName:", selectedIndraNumber.full_name);
-    console.log("Selected Shift name:", selectedIndraNumber.shift_name);
-    console.log("Time In:", additionTimelogs.timeIn);
 
     function addSeconds(time) {
       if (!time) return "";
@@ -60,8 +48,7 @@ function AddTimelogs() {
       date: new Date().toLocaleDateString("en-CA"), // Current date in YYYY-MM-DD format
       status: additionTimelogs.status, // Assuming a default status, you
     };
-    console.log("NEW DATE:", additionTimelogs.date);
-    console.log("New Timelog:", newTimelog);
+
     fetch(`${API_BASE}/api/manual-timelogs`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -76,11 +63,11 @@ function AddTimelogs() {
       })
       .then((data) => {
         console.log("Timelog added:", data);
-        // toast.success(
-        //   `Timelog for ${data.full_name} with Indra No. ${data.indra_number} has been added successfully!`
-        // );
+        toast.success(
+          `Timelog for ${data.full_name} with Indra No. ${data.indra_number} has been added successfully!`
+        );
       })
-    .catch((err) => console.error("Error adding timelog:", err)); 
+      .catch((err) => console.error("Error adding timelog:", err));
     setAdditionTimelogs("");
   }
 
