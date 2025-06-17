@@ -223,11 +223,6 @@ function AddTimelogs() {
       </div>
       <div className="flex flex-row justify-center items-center gap-2">
         <PrimaryButton onClick={handleSubmit}>Sumbit</PrimaryButton>
-        <div className="flex flex-row justify-center">
-          <a href="Attendance-Monitoring">
-            <SecondaryButton>View Attendance</SecondaryButton>
-          </a>
-        </div>
       </div>
     </form>
   );
