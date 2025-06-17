@@ -3,6 +3,7 @@ import PrimaryButton from "../buttons/PrimaryButton";
 import { toast } from "react-toastify";
 import { useAttendance } from "../../hooks/useAttendance";
 import useDocument from "../../hooks/useDocument";
+import SecondaryButton from "../buttons/SecondaryButton";
 
 function AddTimelogs() {
   useDocument("Add Timelog | Indra Business Analyst");
@@ -222,7 +223,11 @@ function AddTimelogs() {
       </div>
       <div className="flex flex-row justify-center items-center gap-2">
         <PrimaryButton onClick={handleSubmit}>Sumbit</PrimaryButton>
-        {/* <PrimaryButton onClick={handleReset}>Reset</PrimaryButton> */}
+        <div className="flex flex-row justify-center">
+          <a href="Attendance-Monitoring">
+            <SecondaryButton>View Attendance</SecondaryButton>
+          </a>
+        </div>
       </div>
     </form>
   );
