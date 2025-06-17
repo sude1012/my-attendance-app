@@ -1,5 +1,5 @@
 import { useState } from "react";
-import InOutButton from "../buttons/PrimaryButton";
+import PrimaryButton from "../buttons/PrimaryButton";
 import { toast } from "react-toastify";
 import { useAttendance } from "../../hooks/useAttendance";
 
@@ -168,8 +168,8 @@ function AddUser() {
         </select>
       </div>
       <div className="flex flex-row justify-center items-center gap-2">
-        <InOutButton onClick={handleSubmit}>Sumbit</InOutButton>
-        <InOutButton onClick={handleReset}>Reset</InOutButton>
+        <PrimaryButton onClick={handleSubmit}>Sumbit</PrimaryButton>
+        <PrimaryButton onClick={handleReset}>Reset</PrimaryButton>
       </div>
     </form>
   );
