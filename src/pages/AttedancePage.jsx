@@ -25,7 +25,7 @@ function AttedancePage() {
         </div>
         <div className="">
           <Form
-          //removed indra props because it is not used on Formjsx
+            //removed indra props because it is not used on Formjsx
             // indra={indra}
             officeIndra={officeIndra}
             indraPersons={indraPersons}
