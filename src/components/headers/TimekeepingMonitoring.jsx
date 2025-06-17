@@ -1,18 +1,44 @@
-// import { sampleTimeLogs } from "../../utils/sampleIndraData";
 import Pagination from "../pagination/Pagination";
-import { useState } from "react";
-function TimekeepingMonitoring({ indraTimelogs }) {
+import { useAttendance } from "../../hooks/useAttendance";
+import { useEffect, useState } from "react";
+import deleteIcon from "../logo and images/delete-2-svgrepo-com.svg";
+import editIcon from "../logo and images/edit-3-svgrepo-com.svg"; // Import edit icon if needed
+function TimekeepingMonitoring() {
+  const { indraTimelogs } = useAttendance();
+  const [timeLogs, setTimeLogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  // Sync local state with context when context changes
+  useEffect(() => {
+    setTimeLogs(indraTimelogs);
+  }, [indraTimelogs]);
 
-  // ✅ Always use the full array for totalPages!
-  const totalPages = Math.ceil(indraTimelogs.length / itemsPerPage);
+  //  Always use the full array for totalPages!
+  const totalPages = Math.ceil(timeLogs.length / itemsPerPage);
 
-  // ✅ Slice the full array for the current page
-  const paginatedLogs = indraTimelogs.slice(
+  //  Slice the full array for the current page
+  const paginatedLogs = timeLogs.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this record?")) return;
+    try {
+      const res = await fetch(
+        `http://localhost:5050/api/timelogs?time_keeping_id=${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (!res.ok) throw new Error("Failed to delete");
+      setTimeLogs((prevLogs) =>
+        prevLogs.filter((log) => log.time_keeping_id !== id)
+      );
+    } catch (err) {
+      alert("Error deleting record.", err);
+    }
+  };
 
   return (
     <div className="flex flex-col justify-center items-center w-full h-full p-3 gap-10">
@@ -44,12 +70,18 @@ function TimekeepingMonitoring({ indraTimelogs }) {
               <th scope="col" className="px-6 py-3">
                 Status
               </th>
+              <th scope="col" className="px-6 py-3">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
             {paginatedLogs.length > 0 ? (
               paginatedLogs.map((log) => (
-                <tr className="bg-[#E3E2DA] border-1 dark:bg-[#E3E2DA] text-[#004254] dark:border-gray-700 border-gray-200 dark:hover:text-[#E3E2DA] hover:bg-gray-50 dark:hover:bg-[#004254]/75">
+                <tr
+                  key={log.time_keeping_id}
+                  className="bg-[#E3E2DA] border-1 dark:bg-[#E3E2DA] text-[#004254] dark:border-gray-700 border-gray-200 dark:hover:text-[#E3E2DA] hover:bg-gray-50 dark:hover:bg-[#004254]/75"
+                >
                   <td className="px-6 py-4">
                     {log.date
                       ? new Date(log.date).toLocaleDateString("en-US", {
@@ -59,12 +91,38 @@ function TimekeepingMonitoring({ indraTimelogs }) {
                         })
                       : ""}
                   </td>
-                  <td className="px-6 py-4">{log.indra_number}</td>
+                  <td key={log.itm} className="px-6 py-4">
+                    {log.indra_number}
+                  </td>
                   <td className="px-6 py-4">{log.full_name}</td>
                   <td className="px-6 py-4">{log.shift_name}</td>
                   <td className="px-6 py-4">{log.time_in}</td>
                   <td className="px-6 py-4">{log.time_out}</td>
                   <td className="px-6 py-4">{log.status}</td>
+
+                  <td className="">
+                    {" "}
+                    <button
+                      onClick={() => handleDelete(log.time_keeping_id)}
+                      className="px-2 py-2 cursor-pointer m-2 hover:bg-[#1976D2] hover:text-[#E3E2DA] transition duration-300"
+                    >
+                      <img
+                        src={editIcon}
+                        alt="Edit"
+                        className="w-5 h-5 inline"
+                      />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(log.time_keeping_id)}
+                      className="px-2 py-2 cursor-pointer m-2 hover:bg-red-600 hover:text-[#E3E2DA] transition duration-300"
+                    >
+                      <img
+                        src={deleteIcon}
+                        alt="Delete"
+                        className="w-5 h-5 inline"
+                      />
+                    </button>
+                  </td>
                 </tr>
               ))
             ) : (

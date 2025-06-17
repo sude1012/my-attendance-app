@@ -83,6 +83,27 @@ limit 12 OFFSET 0;`);
   }
 });
 
+app.delete("/api/timelogs/", async (req, res) => {
+  const { time_keeping_id } = req.query;
+  try {
+    const result = await pool.query(
+      `DELETE FROM time_logs WHERE time_keeping_id = $1 RETURNING *`,
+      [time_keeping_id]
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Time log not found", code: 404 });
+    }
+    res.json({
+      message: "Time log deleted successfully",
+      data: result.rows[0],
+    });
+  } catch (err) {
+    console.error("Error deleting time log:", err);
+    res.status(500).json({ error: "Server Error", details: err.message });
+  }
+});
+// Endpoint to add a new timekeeping log
+
 app.post(
   "/add-timekeeping",
   [
