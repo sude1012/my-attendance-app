@@ -50,12 +50,58 @@ function TimekeepingMonitoring() {
     }
   };
 
+  // State to manage checked checkboxes
+  const [checkedIds, setCheckedIds] = useState([]);
+
+  // Helper to determine if all visible logs are checked
+  const allChecked =
+    paginatedLogs.length > 0 &&
+    paginatedLogs.every((log) => checkedIds.includes(log.time_keeping_id));
+
+  // Handler for master checkbox
+  const handleCheckAll = (e) => {
+    if (e.target.checked) {
+      // Add all visible IDs to checkedIds (avoid duplicates)
+      const newIds = paginatedLogs
+        .map((log) => log.time_keeping_id)
+        .filter((id) => !checkedIds.includes(id));
+      setCheckedIds([...checkedIds, ...newIds]);
+    } else {
+      // Remove all visible IDs from checkedIds
+      setCheckedIds(
+        checkedIds.filter(
+          (id) => !paginatedLogs.some((log) => log.time_keeping_id === id)
+        )
+      );
+    }
+  };
+
+  // Handler for individual checkbox
+  const handleCheck = (id) => (e) => {
+    if (e.target.checked) {
+      setCheckedIds((prev) => [...prev, id]);
+    } else {
+      setCheckedIds((prev) => prev.filter((checkedId) => checkedId !== id));
+    }
+  };
+
   return (
     <div className="flex flex-col justify-center items-center w-full h-full p-3 gap-10">
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-[#E3E2DA] uppercase bg-[#004254] dark:bg-[#004254] dark:text-[#E3E2DA]">
             <tr>
+              <th scope="col" className="px-6 py-3">
+                <label className="flex items-center justify-center w-full h-full">
+                  <input
+                    type="checkbox"
+                    name="checkAll"
+                    checked={allChecked}
+                    onChange={handleCheckAll}
+                    className="form-checkbox h-4 w-4 text-[#004254] focus:ring-[#004254] border-gray-300 rounded"
+                  />
+                </label>
+              </th>
               <th scope="col" className="px-6 py-3">
                 Date
               </th>
@@ -89,6 +135,18 @@ function TimekeepingMonitoring() {
                   key={log.time_keeping_id}
                   className="bg-[#E3E2DA] border-1 dark:bg-[#E3E2DA] text-[#004254] dark:border-gray-700 border-gray-200 dark:hover:text-[#E3E2DA] hover:bg-gray-50 dark:hover:bg-[#004254]/75"
                 >
+                  <td className="h-12 flex items-center justify-center px-10">
+                    <label className="flex items-center justify-center w-full h-full">
+                      <input
+                        type="checkbox"
+                        name="rowCheckbox"
+                        checked={checkedIds.includes(log.time_keeping_id)}
+                        onChange={handleCheck(log.time_keeping_id)}
+                        className="form-checkbox h-4 w-4 text-[#004254] focus:ring-[#004254] border-gray-300 rounded"
+                        value={log.time_keeping_id}
+                      />
+                    </label>
+                  </td>
                   <td className="px-6 py-4">
                     {log.date
                       ? new Date(log.date).toLocaleDateString("en-US", {
@@ -108,7 +166,6 @@ function TimekeepingMonitoring() {
                   <td className="px-6 py-4">{log.status}</td>
 
                   <td className="">
-                    {" "}
                     <button
                       onClick={() => handleDelete(log.time_keeping_id)}
                       className="px-2 py-2 cursor-pointer m-2 hover:bg-[#1976D2] hover:text-[#E3E2DA] transition duration-300"
@@ -134,7 +191,7 @@ function TimekeepingMonitoring() {
               ))
             ) : (
               <tr className="bg-[#E3E2DA] border-1 dark:bg-[#E3E2DA] text-[#004254] dark:border-gray-700 border-gray-200 dark:hover:text-[#E3E2DA] hover:bg-gray-50 dark:hover:bg-[#004254]/75">
-                <td colSpan="7" className="px-6 py-4 text-center text-gray-500">
+                <td colSpan="9" className="px-6 py-4 text-center text-gray-500">
                   No records found.
                 </td>
               </tr>
@@ -143,7 +200,6 @@ function TimekeepingMonitoring() {
         </table>
       </div>
       <a href="http://localhost:5050/api/timelogs/excel">
-        {" "}
         <button className="cursor-pointer border-2 p-2 rounded-sm  bg-[#004254] border-[#004254] text-[#E3E2DA]">
           Generate the Attendance
         </button>
