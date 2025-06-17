@@ -73,7 +73,7 @@ JOIN
 JOIN
   shifts s ON t.shift_id = s.shift_id
 ORDER BY t.date DESC, t.time_in ASC
-limit 12 OFFSET 0;`);
+limit 100 OFFSET 0;`);
     res.json(result.rows); // Send the data as JSON
   } catch (err) {
     console.error("Error fetching timelogs:", err);
