@@ -56,6 +56,7 @@ function TimekeepingMonitoring() {
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-[#E3E2DA] uppercase bg-[#004254] dark:bg-[#004254] dark:text-[#E3E2DA]">
             <tr>
+              <th scope="col" className="px-6 py-3"></th>
               <th scope="col" className="px-6 py-3">
                 Date
               </th>
@@ -89,6 +90,16 @@ function TimekeepingMonitoring() {
                   key={log.time_keeping_id}
                   className="bg-[#E3E2DA] border-1 dark:bg-[#E3E2DA] text-[#004254] dark:border-gray-700 border-gray-200 dark:hover:text-[#E3E2DA] hover:bg-gray-50 dark:hover:bg-[#004254]/75"
                 >
+                  <td className="h-12 flex items-center justify-center px-10">
+                    <label className="flex items-center justify-center w-full h-full">
+                      <input
+                        type="checkbox"
+                        name="myCheckbox"
+                        className=" form-checkbox h-4 w-4 text-[#004254] focus:ring-[#004254] border-gray-300 rounded"
+                        value={log.time_keeping_id}
+                      />
+                    </label>
+                  </td>
                   <td className="px-6 py-4">
                     {log.date
                       ? new Date(log.date).toLocaleDateString("en-US", {
