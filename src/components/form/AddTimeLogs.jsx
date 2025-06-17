@@ -48,7 +48,7 @@ function AddTimelogs() {
       shift_id: 1,
       time_in: officialTimeIn,
       time_out: officialTimeOut,
-      date: new Date().toLocaleDateString("en-CA"), // Current date in YYYY-MM-DD format
+      date: additionTimelogs.date, // Current date in YYYY-MM-DD format
       status: additionTimelogs.status, // Assuming a default status, you
     };
 
