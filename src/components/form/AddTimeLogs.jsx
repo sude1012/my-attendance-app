@@ -161,7 +161,7 @@ function AddTimelogs() {
         <input
           name="timeIn"
           id="timeIn"
-          value={additionTimelogs.timeIn || ""} // ✅ Valid! (should be "09:30" or similar)
+          value={additionTimelogs.timeIn || ""}
           type="time"
           onChange={handleChange}
           placeholder="Time In"
