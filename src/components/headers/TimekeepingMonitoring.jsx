@@ -8,10 +8,11 @@ function TimekeepingMonitoring() {
   const [timeLogs, setTimeLogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+
   // Sync local state with context when context changes
   useEffect(() => {
     setTimeLogs(indraTimelogs);
-  }, [indraTimelogs]);
+  }, [indraTimelogs]); // Update timeLogs whenever indraTimelogs changes
 
   //  Always use the full array for totalPages!
   const totalPages = Math.ceil(timeLogs.length / itemsPerPage);
@@ -64,9 +65,6 @@ function TimekeepingMonitoring() {
               <th scope="col" className="px-6 py-3">
                 Time-Out
               </th>
-              {/* <th scope="col" className="px-6 py-3">
-                Late
-              </th> */}
               <th scope="col" className="px-6 py-3">
                 Status
               </th>
