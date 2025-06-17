@@ -136,6 +136,7 @@ app.post(
           .json({ error: "Already timed in today.", code: 400 });
       }
       // Insert new timekeeping log
+
       const result = await pool.query(
         `INSERT INTO time_logs (indra_number, shift_id, time_in, time_out, date, status)
        VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,

@@ -11,21 +11,20 @@ function AppRoutes() {
   return (
     <div>
       {" "}
-      <AttendanceProvider>
-        <Routes>
-          <Route path="/*" element={<AttedancePage />} />
-          <Route
-            path="Attendance-Monitoring"
-            element={<AttendanceMonitoring />}
-          />{" "}
-          <Route path="/Indra-Main" element={<IndraMain />} />
-          <Route path="/Indra-Office" element={<IndraOfficeMain />} />
-          <Route path="/Indra-Team" element={<IndraTeamMain />} />
-          <Route path="/Indra-Shift" element={<IndraShiftMain />} />
-          <Route path="/Add-User" element={<AddUserPage />} />
-          {/* Add more routes as needed */}
-        </Routes>
-      </AttendanceProvider>
+      <Routes>
+        <Route path="/*" element={<AttedancePage />} />
+        <Route
+          path="Attendance-Monitoring"
+          element={<AttendanceMonitoring />}
+        />{" "}
+        <Route path="/Indra-Main" element={<IndraMain />} />
+        <Route path="/Indra-Office" element={<IndraOfficeMain />} />
+        <Route path="/Indra-Team" element={<IndraTeamMain />} />
+        <Route path="/Indra-Shift" element={<IndraShiftMain />} />
+        <Route path="/Add-User" element={<AddUserPage />} />
+        <Route path="/Add-Timelogs" element={<AddUserPage />} />
+        {/* Add more routes as needed */}
+      </Routes>
     </div>
   );
 }
