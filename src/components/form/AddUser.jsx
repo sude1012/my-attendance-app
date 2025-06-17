@@ -1,8 +1,10 @@
 import { useState } from "react";
 import InOutButton from "../buttons/PrimaryButton";
 import { toast } from "react-toastify";
+import { useAttendance } from "../../hooks/useAttendance";
 
-function AddUser({ officeIndra = [], indraTeam = [], indraShift = [] }) {
+function AddUser() {
+  const { officeIndra, indraTeam, indraShift } = useAttendance();
   // const [newUser, setNewUser] = useState(officeIndra);
   const [fullName, setFullName] = useState("");
   const [indraNo, setIndraNo] = useState("");

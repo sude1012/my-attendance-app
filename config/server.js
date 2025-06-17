@@ -189,6 +189,7 @@ app.get("/latest-timein", async (req, res) => {
 });
 
 // Endpoint to update time_out for a timekeeping log
+
 app.put("/update-timeout", async (req, res) => {
   // console.log("Received Request Body for Time-Out:", req.body); // Debug log
 
