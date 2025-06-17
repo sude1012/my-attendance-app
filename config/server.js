@@ -83,6 +83,21 @@ limit 12 OFFSET 0;`);
   }
 });
 
+app.post("/api/manual-timelogs", async (req, res) => {
+  const { indra_number, shift_id, time_in, time_out, date, status } = req.body;
+  try {
+    const result = await pool.query(
+      `INSERT INTO time_logs (indra_number, shift_id, time_in, time_out, date, status)
+       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [indra_number, shift_id, time_in, time_out, date, status]
+    );
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("Error inserting manual timelog:", err);
+    res.status(500).json({ error: "Server Error", details: err.message });
+  }
+});
+
 app.delete("/api/timelogs/", async (req, res) => {
   const { time_keeping_id } = req.query;
   try {

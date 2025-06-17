@@ -6,6 +6,7 @@ import IndraOfficeMain from "./pages/IndraOfficeMain";
 import IndraTeamMain from "./pages/IndraTeamMain";
 import IndraShiftMain from "./pages/IndraShiftMain";
 import AddUserPage from "./pages/AddUserPage";
+import AddTimelogsPage from "./pages/AddTimelogsPage";
 import { AttendanceProvider } from "./hooks/AttendanceProvider";
 function AppRoutes() {
   return (
@@ -22,7 +23,7 @@ function AppRoutes() {
         <Route path="/Indra-Team" element={<IndraTeamMain />} />
         <Route path="/Indra-Shift" element={<IndraShiftMain />} />
         <Route path="/Add-User" element={<AddUserPage />} />
-        <Route path="/Add-Timelogs" element={<AddUserPage />} />
+        <Route path="/Add-Timelogs" element={<AddTimelogsPage />} />
         {/* Add more routes as needed */}
       </Routes>
     </div>
