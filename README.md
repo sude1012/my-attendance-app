@@ -7,6 +7,7 @@ A web application for tracking attendance with time-in/time-out, built with Reac
 ## Features
 
 - Timekeeping (Time-In/Time-Out)
+- Manual Adding of timekeeping for backup
 - Attendance monitoring table
 - Pagination and lazy loading
 - Export to Excel
