@@ -14,9 +14,6 @@ function AddUser() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    toast.success(
-      `User ${fullName} with Indra No. ${indraNo} has been added successfully!`
-    );
 
     const newUser = {
       indra_number: indraNo, // The unique ID for the user (from your input field)
