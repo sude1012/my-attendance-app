@@ -84,7 +84,9 @@ function TimekeepingMonitoring() {
       setCheckedIds((prev) => prev.filter((checkedId) => checkedId !== id));
     }
   };
-
+  const handleEdit = () => {
+    alert(`Edit functionality is not implemented yet. Stay tuned!`);
+  };
   return (
     <div className="flex flex-col justify-center items-center w-full h-full p-3 gap-10">
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -167,7 +169,7 @@ function TimekeepingMonitoring() {
 
                   <td className="">
                     <button
-                      onClick={() => handleDelete(log.time_keeping_id)}
+                      onClick={handleEdit}
                       className="px-2 py-2 cursor-pointer m-2 hover:bg-[#1976D2] hover:text-[#E3E2DA] transition duration-300"
                     >
                       <img
