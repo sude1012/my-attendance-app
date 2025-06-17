@@ -6,7 +6,7 @@ import useDocument from "../hooks/useDocument";
 import Header from "../components/headers/Header";
 import Form from "../components/form/Form";
 import Footer from "./Footer";
-import ViewAttendance from "../components/buttons/ViewAttendance";
+import ViewAttendance from "../components/buttons/SecondaryButton";
 import { useAttendance } from "../hooks/useAttendance";
 
 function AttedancePage() {
