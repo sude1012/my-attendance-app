@@ -84,7 +84,12 @@ limit 12 OFFSET 0;`);
 });
 
 app.post("/api/manual-timelogs", async (req, res) => {
-  const { indra_number, shift_id, time_in, time_out, date, status } = req.body;
+  let { indra_number, shift_id, time_in, time_out, date, status } = req.body;
+  console.log("Received:", req.body);
+  // Convert empty strings to null
+  time_in = !time_in ? null : time_in;
+  time_out = !time_out ? null : time_out;
+
   try {
     const result = await pool.query(
       `INSERT INTO time_logs (indra_number, shift_id, time_in, time_out, date, status)

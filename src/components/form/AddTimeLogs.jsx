@@ -52,10 +52,16 @@ function AddTimelogs() {
       status: additionTimelogs.status, // Assuming a default status, you
     };
 
+    const safeTimelog = {
+      ...newTimelog,
+      time_in: !newTimelog.time_in ? null : newTimelog.time_in,
+      time_out: !newTimelog.time_out ? null : newTimelog.time_out,
+    };
+
     fetch(`${API_BASE}/api/manual-timelogs`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newTimelog),
+      body: JSON.stringify(safeTimelog),
     })
       .then(async (res) => {
         if (!res.ok) {
@@ -185,7 +191,7 @@ function AddTimelogs() {
         <input
           name="timeOut"
           id="timeOut"
-          value={additionTimelogs.timeOut || ""} // ✅ Valid! (should be "09:30" or similar)
+          value={additionTimelogs.timeOut || ""}
           type="time"
           onChange={handleChange}
           placeholder="Time Out"
