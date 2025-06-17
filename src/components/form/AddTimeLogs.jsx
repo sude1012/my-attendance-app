@@ -5,7 +5,7 @@ import { useAttendance } from "../../hooks/useAttendance";
 import useDocument from "../../hooks/useDocument";
 
 function AddTimelogs() {
-  useDocument("Add Timelogs | Indra Business Analyst");
+  useDocument("Add Timelog | Indra Business Analyst");
   const { indraPersons } = useAttendance();
   const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5050";
   const [additionTimelogs, setAdditionTimelogs] = useState({
