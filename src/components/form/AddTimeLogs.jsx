@@ -2,8 +2,10 @@ import { useState } from "react";
 import PrimaryButton from "../buttons/PrimaryButton";
 import { toast } from "react-toastify";
 import { useAttendance } from "../../hooks/useAttendance";
+import useDocument from "../../hooks/useDocument";
 
 function AddTimelogs() {
+  useDocument("Add Timelogs | Indra Business Analyst");
   const { indraPersons } = useAttendance();
   const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5050";
   const [additionTimelogs, setAdditionTimelogs] = useState({
@@ -11,7 +13,7 @@ function AddTimelogs() {
     timeIn: "",
     timeOut: "",
     date: "",
-    status: 1,
+    status: "",
   });
 
   const selectedIndraNumber = indraPersons?.find(
@@ -69,11 +71,17 @@ function AddTimelogs() {
         );
       })
       .catch((err) => console.error("Error adding timelog:", err));
-    setAdditionTimelogs("");
+    setAdditionTimelogs({
+      indra_number: "",
+      timeIn: "",
+      timeOut: "",
+      date: "",
+      status: 1,
+    });
   }
 
   return (
-    <form className="max-w-sm mx-auto" onSubmit={() => handleSubmit()}>
+    <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
       <div className="mb-3">
         <label
           htmlFor="base-input"
@@ -105,9 +113,7 @@ function AddTimelogs() {
           onChange={handleChange}
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         >
-          <option value="Select your Indra Number">
-            Select your Indra Number
-          </option>
+          <option value="">Select your Indra Number</option>
           {indraPersons?.map((person) => (
             <option key={person.indra_number} value={person.indra_number}>
               {person.indra_number}
@@ -201,7 +207,7 @@ function AddTimelogs() {
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="Status"
         >
-          <option value="Select">Select Status</option>
+          <option value="">Select Status</option>
           <option value="On-Site">On-Site</option>
           <option value="Leave">Leave</option>
           <option value="Halfday - AM">Halfday - AM</option>
