@@ -28,16 +28,25 @@ function TimekeepingMonitoring() {
     try {
       const res = await fetch(
         `http://localhost:5050/api/timelogs?time_keeping_id=${id}`,
-        {
-          method: "DELETE",
-        }
+        { method: "DELETE" }
       );
-      if (!res.ok) throw new Error("Failed to delete");
+      if (!res.ok) {
+        // Try to parse error from server
+        let errorMsg = "Failed to delete record.";
+        try {
+          const errorData = await res.json();
+          errorMsg = errorData.error || errorMsg;
+        } catch {
+          // If response is not JSON, keep default errorMsg
+        }
+        throw new Error(errorMsg);
+      }
+      // Remove the deleted log from local state
       setTimeLogs((prevLogs) =>
         prevLogs.filter((log) => log.time_keeping_id !== id)
       );
     } catch (err) {
-      alert("Error deleting record.", err);
+      alert(`Error deleting record: ${err.message}`);
     }
   };
 
