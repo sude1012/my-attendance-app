@@ -246,7 +246,6 @@ app.get("/api/indra-office", async (req, res) => {
 app.get("/api/indra-team", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM teams;");
-    console.log("Teams data:", result.rows); // Debug
     res.json(result.rows);
   } catch (err) {
     console.error("Error fetching Indra Team Data:", err);
