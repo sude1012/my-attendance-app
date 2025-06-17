@@ -219,6 +219,7 @@ function AddTimelogs() {
           <option value="Leave">Leave</option>
           <option value="Halfday - AM">Halfday - AM</option>
           <option value="Halfday - PM">Halfday - PM</option>
+          <option value="Halfday - PM">Holiday</option>
         </select>
       </div>
       <div className="flex flex-row justify-center items-center gap-2">
