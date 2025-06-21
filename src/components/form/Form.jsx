@@ -1,19 +1,44 @@
+/**
+ * Form.jsx
+ * -----------
+ * This component handles the main timekeeping form for users to log their time in and time out.
+ * It manages form state, handles API requests for timekeeping actions, and provides user feedback (loading, errors, etc.).
+ *
+ * Features:
+ * - Time In and Time Out functionality
+ * - Loading spinner during API calls
+ * - Error and success message handling
+ * - Can be reused or extended for other timekeeping-related forms
+ *
+ * Usage:
+ * Import and render <Form /> where you want to display the timekeeping form.
+ */
+
 import { useState } from "react";
 import PrimaryButton from "../buttons/PrimaryButton";
 import Error from "../alerts/ErrorMessage";
-import SuccesMessage from "../alerts/SuccesMessage";
+import SuccesMessage from "../alerts/SuccesMessgitage";
 import Input from "../input/Input";
+import Spinner from "../ui/spinner";
 import { toast } from "react-toastify";
 import { useAttendance } from "../../hooks/useAttendance";
 
 function Form({ indraPersons = [] }) {
+  const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5050";
   const [fullName, setFullName] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorCode, setErrorCode] = useState(null);
+  const [loading, setLoading] = useState({
+    timeIn: false,
+    timeOut: false,
+  });
+  // const [currentDate, setCurrentDate] = useState(new Date());
   const { currentDate } = useAttendance();
+
+  // function buttons that handle time in and time out
   function handleTimeIn(e) {
     if (e) e.preventDefault();
 
@@ -23,8 +48,8 @@ function Form({ indraPersons = [] }) {
       second: "2-digit",
     });
     const dateString = currentDate.toLocaleDateString("en-CA"); // "2025-06-16"
-    console.log(`The ${fullName} Time In is ${currentTime}`);
-    console.log(`The ${fullName} Date ${currentDate}`);
+    // console.log(`The ${fullName} Time In is ${currentTime}`);
+    // console.log(`The ${fullName} Date ${currentDate}`);
     // Check if fullName is empty
     if (!fullName) {
       // Show error message if fullName is empty
@@ -36,6 +61,7 @@ function Form({ indraPersons = [] }) {
       setTimeout(() => setShowError(false), 2000);
       return;
     } else {
+      setLoading(true); // Set loading state to true when starting the operation
       const indra_number = indraPersons.find(
         (item) => item.full_name === fullName
       )?.indra_number;
@@ -50,7 +76,8 @@ function Form({ indraPersons = [] }) {
       console.log("Adding timekeeping data:", addTimekeep); //Debugging log
       // Here you would typically send the timekeeping data to your backend
       // Send the timekeeping data to the backend
-      fetch("http://localhost:5050/add-timekeeping", {
+      setLoading((prev) => ({ ...prev, timeIn: true })); // Set loading state to true when starting the operation
+      fetch(`${API_BASE}/add-timekeeping`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(addTimekeep),
@@ -73,7 +100,7 @@ function Form({ indraPersons = [] }) {
             `User ${fullName} with Indra No. ${indra_number} successfully timed in at ${currentTime}`
           );
           setFullName(""); // Clear the fullName after successful time in
-          setTimeout(() => setShowSuccess(false), 2000);
+          setTimeout(() => setShowSuccess(false), 1000);
         })
         .catch((err) => {
           // err is now the object sent from backend
@@ -87,6 +114,11 @@ function Form({ indraPersons = [] }) {
           setErrorCode(code);
           setShowError(true);
           setTimeout(() => setShowError(false), 2000);
+        })
+        .finally(() => {
+          setLoading((prev) => ({ ...prev, timeIn: false })); // Reset loading state after the operation
+          // setTimeout(() => setLoading(false), 1000); // for Demo purposes, reset loading state after 1 second
+          console.log("Loading state reset after timekeeping operation.");
         });
     }
   }
@@ -114,7 +146,7 @@ function Form({ indraPersons = [] }) {
     try {
       // Fetch latest time log for this user and date
       const res = await fetch(
-        `http://localhost:5050/latest-timein?indra_number=${indra_number}&date=${dateString}`
+        `${API_BASE}/latest-timein?indra_number=${indra_number}&date=${dateString}`
       );
       const { time_in, time_out } = await res.json();
       if (!dateString) {
@@ -139,7 +171,7 @@ function Form({ indraPersons = [] }) {
         setTimeout(() => setShowError(false), 2000);
         return;
       }
-
+      setLoading((prev) => ({ ...prev, timeOut: true }));
       // Update time_out in the backend
       const updateRes = await fetch("http://localhost:5050/update-timeout", {
         method: "PUT",
@@ -174,6 +206,10 @@ function Form({ indraPersons = [] }) {
       setErrorCode(code);
       setShowError(true);
       setTimeout(() => setShowError(false), 1000);
+    } finally {
+      setLoading((prev) => ({ ...prev, timeOut: false })); // Reset loading state after the operation
+      // setTimeout(() => setLoading(false), 1000); // for Demo purposes, reset loading state after 1 second
+      console.log("Loading state reset after timekeeping operation.");
     }
   }
 
@@ -203,8 +239,27 @@ function Form({ indraPersons = [] }) {
           />
         </div>
         <div className="flex flex-row gap-2 ml-2">
-          <PrimaryButton onClick={handleTimeIn}>Time-In</PrimaryButton>
-          <PrimaryButton onClick={handleTimeOut}>Time-Out</PrimaryButton>
+          <PrimaryButton
+            onClick={handleTimeIn}
+            className="flex flex-col items-center gap-2"
+          >
+            {" "}
+            <span>Time-In</span>{" "}
+            {loading.timeIn && (
+              <div className="absolute inset-0 flex items-center justify-center z-10 bg-white/60 rounded-[0.75rem]">
+                <Spinner />
+              </div>
+            )}
+          </PrimaryButton>
+
+          <PrimaryButton onClick={handleTimeOut}>
+            <span>Time-Out</span>{" "}
+            {loading.timeOut && (
+              <div className="absolute inset-0 flex items-center justify-center z-10 bg-white/60 rounded-[0.75rem]">
+                <Spinner />
+              </div>
+            )}
+          </PrimaryButton>
         </div>
       </form>
     </div>
