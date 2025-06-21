@@ -142,7 +142,7 @@ function Form({ indraPersons = [] }) {
   async function handleTimeOut(e) {
     if (e) e.preventDefault();
 
-    console.log(`The ${fullName}! today is ${currentDateTime.currentDate}`);
+    console.log(`Hi! ${fullName}! today is ${currentDateTime.currentDate}`);
 
     const indra_number = indraPersons.find(
       (item) => item.full_name === fullName
@@ -151,24 +151,21 @@ function Form({ indraPersons = [] }) {
     try {
       // Fetch latest time log for this user and date
       const res = await fetch(
-        `${API_BASE}/latest-timein?indra_number=${indra_number}&date=${currentDateTime.currentDate}`
+        `${API_BASE}/latest-timein?indra_number=${indra_number}`
       );
-      const { time_in, time_out } = await res.json();
+      const { time_in, time_out, date } = await res.json();
       if (!currentDateTime.currentDate) {
-        console.log("No current date selected");
         setShowError(true);
         setErrorMessage("Please select a valid date.");
         setTimeout(() => setShowError(false), 2000);
         return;
       }
-      // Validation: Check if user has not timed in yet
       if (!time_in) {
         setShowError(true);
         setErrorMessage("Alright! Let's go to work! Please timein!");
         setTimeout(() => setShowError(false), 2000);
         return;
       }
-      // Validation: Check if user has already timed out
       if (time_out) {
         setShowError(true);
         setErrorMessage("Let's go home! You have already timed out!");
@@ -176,15 +173,23 @@ function Form({ indraPersons = [] }) {
         return;
       }
       setLoading((prev) => ({ ...prev, timeOut: true }));
+
+      // Get current time for time_out
+      const timeNow = new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+
       // Update time_out in the backend
-      const updateRes = await fetch("http://localhost:5050/update-timeout", {
+      const updateRes = await fetch(`${API_BASE}/update-timeout`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           indra_number,
-          date: currentDateTime.currentDate,
+          date,
           time_in,
-          time_out: currentTime,
+          time_out: timeNow,
           status: "On-Site",
         }),
       });
@@ -194,13 +199,11 @@ function Form({ indraPersons = [] }) {
       setShowSuccess(true);
       setSuccessMessage(`Hey! ${fullName}, you have successfully timed out.`);
       toast.success(
-        `User ${fullName} with Indra No. ${indra_number} successfully timed out at ${currentTime}`
+        `User ${fullName} with Indra No. ${indra_number} successfully timed out at ${timeNow}`
       );
       setFullName("");
-
       setTimeout(() => setShowSuccess(false), 2000);
     } catch (err) {
-      console.log("Error object in catch:", err);
       let msg =
         err.error ||
         err.message ||
@@ -211,8 +214,7 @@ function Form({ indraPersons = [] }) {
       setShowError(true);
       setTimeout(() => setShowError(false), 1000);
     } finally {
-      setLoading((prev) => ({ ...prev, timeOut: false })); // Reset loading state after the operation
-      // setTimeout(() => setLoading(false), 1000); // for Demo purposes, reset loading state after 1 second
+      setLoading((prev) => ({ ...prev, timeOut: false }));
       console.log("Loading state reset after timekeeping operation.");
     }
   }
@@ -268,7 +270,7 @@ function Form({ indraPersons = [] }) {
             )}
           </PrimaryButton>
 
-          <PrimaryButton onClick={handleTimeOut}>
+          <PrimaryButton onClick={handleTimeOut} type="button">
             <span>Time-Out</span>{" "}
             {loading.timeOut && (
               <div className="absolute inset-0 flex items-center justify-center z-10 bg-white/60 rounded-[0.75rem]">
