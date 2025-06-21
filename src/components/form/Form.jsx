@@ -47,80 +47,64 @@ function Form({ indraPersons = [] }) {
       minute: "2-digit",
       second: "2-digit",
     });
-    const dateString = currentDate.toLocaleDateString("en-CA"); // "2025-06-16"
-    // console.log(`The ${fullName} Time In is ${currentTime}`);
-    // console.log(`The ${fullName} Date ${currentDate}`);
-    // Check if fullName is empty
+    const dateString = currentDate.toLocaleDateString("en-CA");
+
     if (!fullName) {
-      // Show error message if fullName is empty
-      // console.log("No full name selected");
-      // Set error state to show the error message
       setShowError(true);
       setErrorMessage("Hey! Please select a name.");
       setErrorCode(null);
       setTimeout(() => setShowError(false), 2000);
       return;
-    } else {
-      setLoading(true); // Set loading state to true when starting the operation
-      const indra_number = indraPersons.find(
-        (item) => item.full_name === fullName
-      )?.indra_number;
-      const addTimekeep = {
-        indra_number,
-        shift_id: 1,
-        time_in: currentTime,
-        time_out: null,
-        date: dateString, // Use the formatted date string
-        status: "On-Site",
-      };
-      console.log("Adding timekeeping data:", addTimekeep); //Debugging log
-      // Here you would typically send the timekeeping data to your backend
-      // Send the timekeeping data to the backend
-      setLoading((prev) => ({ ...prev, timeIn: true })); // Set loading state to true when starting the operation
-      fetch(`${API_BASE}/add-timekeeping`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(addTimekeep),
-      })
-        .then(async (res) => {
-          const data = await res.json();
-          if (!res.ok) {
-            throw data; // throw the actual object, not new Error
-          }
-          return data;
-        })
-        .then((data) => {
-          console.log("Timekeeping data added successfully:", data);
-          setShowSuccess(true);
-          setSuccessMessage(
-            `Hey! ${fullName}, you have successfully timed in at ${currentTime}.`
-          );
-
-          toast.success(
-            `User ${fullName} with Indra No. ${indra_number} successfully timed in at ${currentTime}`
-          );
-          setFullName(""); // Clear the fullName after successful time in
-          setTimeout(() => setShowSuccess(false), 1000);
-        })
-        .catch((err) => {
-          // err is now the object sent from backend
-          console.log("Error object in catch:", err);
-          let msg =
-            err.error ||
-            err.message ||
-            "An error occurred while adding timekeeping data.";
-          let code = err.code || null;
-          setErrorMessage(msg);
-          setErrorCode(code);
-          setShowError(true);
-          setTimeout(() => setShowError(false), 2000);
-        })
-        .finally(() => {
-          setLoading((prev) => ({ ...prev, timeIn: false })); // Reset loading state after the operation
-          // setTimeout(() => setLoading(false), 1000); // for Demo purposes, reset loading state after 1 second
-          console.log("Loading state reset after timekeeping operation.");
-        });
     }
+
+    setLoading((prev) => ({ ...prev, timeIn: true }));
+
+    const indra_number = indraPersons.find(
+      (item) => item.full_name === fullName
+    )?.indra_number;
+    const addTimekeep = {
+      indra_number,
+      shift_id: 1,
+      time_in: currentTime,
+      time_out: null,
+      date: dateString,
+      status: "On-Site",
+    };
+
+    (async () => {
+      try {
+        const res = await fetch(`${API_BASE}/add-timekeeping`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(addTimekeep),
+        });
+        const data = await res.json();
+        if (!res.ok) throw data;
+
+        setShowSuccess(true);
+        setSuccessMessage(
+          `Hey! ${fullName}, you have successfully timed in at ${currentTime}.`
+        );
+        toast.success(
+          `User ${fullName} with Indra No. ${indra_number} successfully timed in at ${currentTime}`
+        );
+        setFullName("");
+        setTimeout(() => setShowSuccess(false), 1000);
+      } catch (err) {
+        let msg =
+          err.error ||
+          err.message ||
+          "An error occurred while adding timekeeping data.";
+        let code = err.code || null;
+        setErrorMessage(msg);
+        setErrorCode(code);
+        setShowError(true);
+        setTimeout(() => setShowError(false), 2000);
+      } finally {
+        setLoading((prev) => ({ ...prev, timeIn: false }));
+        console.log("Loading state reset after timekeeping operation.");
+      }
+    })();
   }
   async function handleTimeOut(e) {
     if (e) e.preventDefault();
