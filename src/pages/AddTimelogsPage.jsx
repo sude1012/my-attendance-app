@@ -3,8 +3,9 @@ import AddUser from "../components/form/AddUser";
 import Footer from "./Footer";
 import useDocument from "../hooks/useDocument";
 import Header from "../components/headers/Header";
+import AddTimelogs from "../components/form/AddTimeLogs";
 
-function AddUserPage() {
+function AddTimelogsPage() {
   useDocument("Add User | Indra Business Analyst");
 
   return (
@@ -18,7 +19,7 @@ function AddUserPage() {
       </div>
       <Header />
       <div className="flex flex-col justify-center items-center">
-        <AddUser />
+        <AddTimelogs />
       </div>
       <div>
         <Footer />
@@ -27,4 +28,4 @@ function AddUserPage() {
   );
 }
 
-export default AddUserPage;
+export default AddTimelogsPage;

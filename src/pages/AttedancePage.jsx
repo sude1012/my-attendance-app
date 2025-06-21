@@ -6,7 +6,7 @@ import useDocument from "../hooks/useDocument";
 import Header from "../components/headers/Header";
 import Form from "../components/form/Form";
 import Footer from "./Footer";
-import ViewAttendance from "../components/buttons/ViewAttendance";
+import SecondaryButton from "../components/buttons/SecondaryButton";
 import { useAttendance } from "../hooks/useAttendance";
 
 function AttedancePage() {
@@ -25,7 +25,7 @@ function AttedancePage() {
         </div>
         <div className="">
           <Form
-          //removed indra props because it is not used on Formjsx
+            //removed indra props because it is not used on Formjsx
             // indra={indra}
             officeIndra={officeIndra}
             indraPersons={indraPersons}
@@ -33,7 +33,7 @@ function AttedancePage() {
         </div>
         <div className="flex flex-row justify-center">
           <a href="Attendance-Monitoring">
-            <ViewAttendance>View Attendance</ViewAttendance>
+            <SecondaryButton>View Attendance</SecondaryButton>
           </a>
         </div>
       </div>

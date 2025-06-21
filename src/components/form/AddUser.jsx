@@ -1,8 +1,10 @@
 import { useState } from "react";
-import InOutButton from "../buttons/PrimaryButton";
+import PrimaryButton from "../buttons/PrimaryButton";
 import { toast } from "react-toastify";
+import { useAttendance } from "../../hooks/useAttendance";
 
-function AddUser({ officeIndra = [], indraTeam = [], indraShift = [] }) {
+function AddUser() {
+  const { officeIndra, indraTeam, indraShift } = useAttendance();
   // const [newUser, setNewUser] = useState(officeIndra);
   const [fullName, setFullName] = useState("");
   const [indraNo, setIndraNo] = useState("");
@@ -12,9 +14,6 @@ function AddUser({ officeIndra = [], indraTeam = [], indraShift = [] }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    toast.success(
-      `User ${fullName} with Indra No. ${indraNo} has been added successfully!`
-    );
 
     const newUser = {
       indra_number: indraNo, // The unique ID for the user (from your input field)
@@ -169,8 +168,8 @@ function AddUser({ officeIndra = [], indraTeam = [], indraShift = [] }) {
         </select>
       </div>
       <div className="flex flex-row justify-center items-center gap-2">
-        <InOutButton onClick={handleSubmit}>Sumbit</InOutButton>
-        <InOutButton onClick={handleReset}>Reset</InOutButton>
+        <PrimaryButton onClick={handleSubmit}>Sumbit</PrimaryButton>
+        <PrimaryButton onClick={handleReset}>Reset</PrimaryButton>
       </div>
     </form>
   );

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function ViewAttendance({ children }) {
+function SecondaryButton({ children }) {
   const [isClicked, setIsClicked] = useState(false);
 
   function handleClick() {
@@ -23,4 +23,4 @@ function ViewAttendance({ children }) {
   );
 }
 
-export default ViewAttendance;
+export default SecondaryButton;

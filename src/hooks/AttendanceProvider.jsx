@@ -19,13 +19,6 @@ export function AttendanceProvider({ children }) {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const newDate = setInterval(() => {
-      setCurrentDate(new Date());
-    }, 1000);
-    return () => clearInterval(newDate);
-  }, []);
-
   const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5050";
 
   useEffect(() => {

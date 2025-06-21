@@ -73,13 +73,56 @@ JOIN
 JOIN
   shifts s ON t.shift_id = s.shift_id
 ORDER BY t.date DESC, t.time_in ASC
-limit 12 OFFSET 0;`);
+limit 100 OFFSET 0;`);
     res.json(result.rows); // Send the data as JSON
   } catch (err) {
     console.error("Error fetching timelogs:", err);
-    res.status(500).send("Server Error");
+    res
+      .status(500)
+      .json({ error: "Can't fetch time logs", details: err.message });
   }
 });
+
+app.post("/api/manual-timelogs", async (req, res) => {
+  let { indra_number, shift_id, time_in, time_out, date, status } = req.body;
+  console.log("Received:", req.body);
+  // Convert empty strings to null
+  time_in = !time_in ? null : time_in;
+  time_out = !time_out ? null : time_out;
+
+  try {
+    const result = await pool.query(
+      `INSERT INTO time_logs (indra_number, shift_id, time_in, time_out, date, status)
+       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [indra_number, shift_id, time_in, time_out, date, status]
+    );
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("Error inserting manual timelog:", err);
+    res.status(500).json({ error: "Server Error", details: err.message });
+  }
+});
+
+app.delete("/api/timelogs/", async (req, res) => {
+  const { time_keeping_id } = req.query;
+  try {
+    const result = await pool.query(
+      `DELETE FROM time_logs WHERE time_keeping_id = $1 RETURNING *`,
+      [time_keeping_id]
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Time log not found", code: 404 });
+    }
+    res.json({
+      message: "Time log deleted successfully",
+      data: result.rows[0],
+    });
+  } catch (err) {
+    console.error("Error deleting time log:", err);
+    res.status(500).json({ error: "Server Error", details: err.message });
+  }
+});
+// Endpoint to add a new timekeeping log
 
 app.post(
   "/add-timekeeping",
@@ -113,6 +156,7 @@ app.post(
           .json({ error: "Already timed in today.", code: 400 });
       }
       // Insert new timekeeping log
+
       const result = await pool.query(
         `INSERT INTO time_logs (indra_number, shift_id, time_in, time_out, date, status)
        VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
@@ -166,9 +210,8 @@ app.get("/latest-timein", async (req, res) => {
 });
 
 // Endpoint to update time_out for a timekeeping log
-app.put("/update-timeout", async (req, res) => {
-  // console.log("Received Request Body for Time-Out:", req.body); // Debug log
 
+app.put("/update-timeout", async (req, res) => {
   const { indra_number, date, time_out } = req.body;
 
   try {
@@ -208,7 +251,6 @@ app.get("/api/indra-office", async (req, res) => {
 app.get("/api/indra-team", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM teams;");
-    console.log("Teams data:", result.rows); // Debug
     res.json(result.rows);
   } catch (err) {
     console.error("Error fetching Indra Team Data:", err);

@@ -18,8 +18,6 @@ if (process.env.NODE_ENV === "production") {
   dotenv.config(); // defaults to .env
 }
 
-dotenv.config();
-
 const { Pool } = pkg;
 
 const pool = new Pool({

@@ -6,22 +6,25 @@ import IndraOfficeMain from "./pages/IndraOfficeMain";
 import IndraTeamMain from "./pages/IndraTeamMain";
 import IndraShiftMain from "./pages/IndraShiftMain";
 import AddUserPage from "./pages/AddUserPage";
-
+import AddTimelogsPage from "./pages/AddTimelogsPage";
+import { AttendanceProvider } from "./hooks/AttendanceProvider";
 function AppRoutes() {
   return (
     <div>
+      {" "}
       <Routes>
         <Route path="/*" element={<AttedancePage />} />
         <Route
           path="Attendance-Monitoring"
-          // removed props because it is not used on this page (attendancemonitoring) same with aAttedancePage
           element={<AttendanceMonitoring />}
-        />
+        />{" "}
         <Route path="/Indra-Main" element={<IndraMain />} />
         <Route path="/Indra-Office" element={<IndraOfficeMain />} />
         <Route path="/Indra-Team" element={<IndraTeamMain />} />
         <Route path="/Indra-Shift" element={<IndraShiftMain />} />
         <Route path="/Add-User" element={<AddUserPage />} />
+        <Route path="/Add-Timelogs" element={<AddTimelogsPage />} />
+        {/* Add more routes as needed */}
       </Routes>
     </div>
   );
