@@ -30,7 +30,6 @@ function Form({ indraPersons = [] }) {
   const [fullName, setFullName] = useState("");
   const [indraNumber, setIndraNumber] = useState("");
   const [currentTime, setCurrentTime] = useState("");
-
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -239,7 +238,11 @@ function Form({ indraPersons = [] }) {
           onConfirm={handleConfirmTimeIn}
           onCancel={handleCanceltimeIn}
           indraNumber={indraNumber}
-          currentDate={currentDate.toLocaleDateString("en-CA")}
+          currentDate={currentDate.toLocaleDateString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          })}
           currentTime={currentTime}
         />
       )}
