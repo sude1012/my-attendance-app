@@ -17,7 +17,7 @@
 import { useState } from "react";
 import PrimaryButton from "../buttons/PrimaryButton";
 import Error from "../alerts/ErrorMessage";
-import SuccesMessage from "../alerts/SuccesMessgitage";
+import SuccesMessage from "../alerts/SuccessMessage";
 import Input from "../input/Input";
 import Spinner from "../ui/spinner";
 import { toast } from "react-toastify";
