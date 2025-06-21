@@ -17,26 +17,56 @@
 import { useState } from "react";
 import PrimaryButton from "../buttons/PrimaryButton";
 import Error from "../alerts/ErrorMessage";
+import Confirmation from "../alerts/Confirmation";
 import SuccessMessage from "../alerts/SuccessMessage";
 import Input from "../input/Input";
 import Spinner from "../ui/spinner";
 import { toast } from "react-toastify";
 import { useAttendance } from "../../hooks/useAttendance";
+import { s } from "framer-motion/client";
 
 function Form({ indraPersons = [] }) {
   const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5050";
   const [fullName, setFullName] = useState("");
+  const [currentTime, setCurrentTime] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorCode, setErrorCode] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState({
     timeIn: false,
     timeOut: false,
   });
   // const [currentDate, setCurrentDate] = useState(new Date());
   const { currentDate } = useAttendance();
+
+  function handleTimeInClick() {
+    if (!fullName) {
+      setShowError(true);
+      setErrorMessage("Hey! Please select a name.");
+      setTimeout(() => setShowError(false), 2000);
+      return;
+    }
+    const now = new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+    setCurrentTime(now);
+    setShowConfirm(true);
+    return;
+    // This function is called when the Time-In button is clicked
+  }
+  function handleConfirmTimeIn() {
+    setShowConfirm(false);
+    handleTimeIn(); // Your actual time-in logic
+  }
+
+  function handleCanceltimeIn() {
+    setShowConfirm(false);
+  }
 
   // function buttons that handle time in and time out
   function handleTimeIn(e) {
@@ -116,13 +146,6 @@ function Form({ indraPersons = [] }) {
     const dateString = currentDate.toLocaleDateString("en-CA"); // <-- Add this line;
     console.log(`The ${fullName}! today is ${dateString}`);
 
-    if (!fullName) {
-      setShowError(true);
-      setErrorMessage("Hey! Please select a name.");
-      setTimeout(() => setShowError(false), 2000);
-      return;
-    }
-
     const indra_number = indraPersons.find(
       (item) => item.full_name === fullName
     )?.indra_number;
@@ -140,7 +163,6 @@ function Form({ indraPersons = [] }) {
         setTimeout(() => setShowError(false), 2000);
         return;
       }
-
       // Validation: Check if user has not timed in yet
       if (!time_in) {
         setShowError(true);
@@ -199,7 +221,17 @@ function Form({ indraPersons = [] }) {
 
   return (
     <div className="flex flex-row justify-center items-center">
-      <form className="flex flex-col justify-center items-center">
+      {" "}
+      {showConfirm && (
+        <Confirmation
+          fullName={fullName}
+          onConfirm={handleConfirmTimeIn}
+          onCancel={handleCanceltimeIn}
+          currentDate={currentDate}
+          currentTime={currentTime}
+        />
+      )}
+      <form className="relative flex flex-col justify-center items-center">
         {showSuccess && (
           <SuccessMessage message={showSuccess}>
             {successMessage || "Successfully Timed In/Out"}
@@ -224,7 +256,8 @@ function Form({ indraPersons = [] }) {
         </div>
         <div className="flex flex-row gap-2 ml-2">
           <PrimaryButton
-            onClick={handleTimeIn}
+            type="button" // <-- Add this line!
+            onClick={handleTimeInClick}
             className="flex flex-col items-center gap-2"
           >
             {" "}
