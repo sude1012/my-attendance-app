@@ -23,7 +23,8 @@ function Confirmation({
           <li className="text-[#004254] font-bold">
             Name: <span>{fullName}</span>
           </li>
-          <li className="text-[#004254]">{`Date and Time: ${currentDate} ${currentTime}`}</li>
+          <li className="text-[#004254]">{`Date: ${currentDate}`}</li>
+          <li className="text-[#004254]">{`Time: ${currentTime}`}</li>
         </ul>
       </div>
       <div className="flex flex-row justify-center items-center mt-4 gap-2">
