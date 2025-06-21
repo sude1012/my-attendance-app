@@ -99,6 +99,7 @@ function Form({ indraPersons = [] }) {
       date: dateString,
       status: "On-Site",
     };
+    setLoading((prev) => ({ ...prev, timeIn: true }));
 
     try {
       const res = await fetch(`${API_BASE}/add-timekeeping`, {
@@ -149,7 +150,7 @@ function Form({ indraPersons = [] }) {
       setTimeout(() => setShowError(false), 2000);
       return;
     }
-
+    setLoading((prev) => ({ ...prev, timeOut: true }));
     const indra_number = indraPersons.find(
       (item) => item.full_name === fullName
     )?.indra_number;
@@ -217,6 +218,9 @@ function Form({ indraPersons = [] }) {
       setErrorCode(code);
       setShowError(true);
       setTimeout(() => setShowError(false), 1000);
+    } finally {
+      setLoading((prev) => ({ ...prev, timeOut: false }));
+      console.log("Loading state reset after timekeeping operation.");
     }
   }
 
@@ -274,11 +278,6 @@ function Form({ indraPersons = [] }) {
 
           <PrimaryButton onClick={handleTimeOut} type="button">
             <span>Time-Out</span>{" "}
-            {loading.timeOut && (
-              <div className="absolute inset-0 flex items-center justify-center z-10 bg-white/60 rounded-[0.75rem]">
-                <Spinner />
-              </div>
-            )}
           </PrimaryButton>
         </div>
       </form>
