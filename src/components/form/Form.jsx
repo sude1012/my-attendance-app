@@ -27,7 +27,12 @@ import { useAttendance } from "../../hooks/useAttendance";
 function Form({ indraPersons = [] }) {
   const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5050";
   const [fullName, setFullName] = useState("");
+  const [indraNumber, setIndraNumber] = useState("");
   const [currentTime, setCurrentTime] = useState("");
+  const [currentDateTime, setCurrentDateTime] = useState({
+    currentDate: "",
+    currentTime: "",
+  });
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -38,8 +43,6 @@ function Form({ indraPersons = [] }) {
     timeIn: false,
     timeOut: false,
   });
-  // const [currentDate, setCurrentDate] = useState(new Date());
-  const { currentDate } = useAttendance();
 
   function handleTimeInClick() {
     if (!fullName) {
@@ -48,12 +51,24 @@ function Form({ indraPersons = [] }) {
       setTimeout(() => setShowError(false), 2000);
       return;
     }
-    const now = new Date().toLocaleTimeString([], {
+
+    const timeNow = new Date().toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
     });
-    setCurrentTime(now);
+    const dateNow = (currentDateTime.currentTime = new Date());
+
+    setCurrentDateTime((prev) => ({
+      ...prev,
+      currentDate: dateNow.toLocaleDateString("en-CA"),
+    }));
+
+    const indra_number = indraPersons.find(
+      (item) => item.full_name === fullName
+    )?.indra_number;
+    setIndraNumber(indra_number);
+    setCurrentTime(timeNow);
     setShowConfirm(true);
     return;
     // This function is called when the Time-In button is clicked
@@ -71,13 +86,6 @@ function Form({ indraPersons = [] }) {
   function handleTimeIn(e) {
     if (e) e.preventDefault();
 
-    const currentTime = new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
-    const dateString = currentDate.toLocaleDateString("en-CA");
-
     if (!fullName) {
       setShowError(true);
       setErrorMessage("Hey! Please select a name.");
@@ -88,15 +96,12 @@ function Form({ indraPersons = [] }) {
 
     setLoading((prev) => ({ ...prev, timeIn: true }));
 
-    const indra_number = indraPersons.find(
-      (item) => item.full_name === fullName
-    )?.indra_number;
     const addTimekeep = {
-      indra_number,
+      indra_number: indraNumber,
       shift_id: 1,
       time_in: currentTime,
       time_out: null,
-      date: dateString,
+      date: currentDateTime.currentDate,
       status: "On-Site",
     };
 
@@ -115,7 +120,7 @@ function Form({ indraPersons = [] }) {
           `Hey! ${fullName}, you have successfully timed in at ${currentTime}.`
         );
         toast.success(
-          `User ${fullName} with Indra No. ${indra_number} successfully timed in at ${currentTime}`
+          `User ${fullName} with Indra No. ${indraNumber} successfully timed in at ${currentTime}`
         );
         setFullName("");
         setTimeout(() => setShowSuccess(false), 1000);
@@ -137,13 +142,8 @@ function Form({ indraPersons = [] }) {
   }
   async function handleTimeOut(e) {
     if (e) e.preventDefault();
-    const currentTime = new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
-    const dateString = currentDate.toLocaleDateString("en-CA"); // <-- Add this line;
-    console.log(`The ${fullName}! today is ${dateString}`);
+
+    console.log(`The ${fullName}! today is ${currentDateTime.currentDate}`);
 
     const indra_number = indraPersons.find(
       (item) => item.full_name === fullName
@@ -152,10 +152,10 @@ function Form({ indraPersons = [] }) {
     try {
       // Fetch latest time log for this user and date
       const res = await fetch(
-        `${API_BASE}/latest-timein?indra_number=${indra_number}&date=${dateString}`
+        `${API_BASE}/latest-timein?indra_number=${indra_number}&date=${currentDateTime.currentDate}`
       );
       const { time_in, time_out } = await res.json();
-      if (!dateString) {
+      if (!currentDateTime.currentDate) {
         console.log("No current date selected");
         setShowError(true);
         setErrorMessage("Please select a valid date.");
@@ -183,7 +183,7 @@ function Form({ indraPersons = [] }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           indra_number,
-          date: dateString,
+          date: currentDateTime.currentDate,
           time_in,
           time_out: currentTime,
           status: "On-Site",
@@ -226,7 +226,8 @@ function Form({ indraPersons = [] }) {
           fullName={fullName}
           onConfirm={handleConfirmTimeIn}
           onCancel={handleCanceltimeIn}
-          currentDate={currentDate}
+          indraNumber={indraNumber}
+          currentDate={currentDateTime.currentDate}
           currentTime={currentTime}
         />
       )}

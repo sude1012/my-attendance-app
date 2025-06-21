@@ -5,6 +5,7 @@ function Confirmation({
   onConfirm,
   currentDate,
   currentTime,
+  indraNumber = "",
 }) {
   return (
     <div
@@ -18,7 +19,7 @@ function Confirmation({
       </div>
       <div className="flex flex-col justify-center items-center">
         <ul className="text-lg text-[#004254] flex flex-col gap-1 mt-4">
-          <li className="text-[#004254] font-bold">Indra No.: 587174</li>
+          <li className="text-[#004254] font-bold">{`Indra No.: ${indraNumber}`}</li>
           <li className="text-[#004254] font-bold">
             Name: <span>{fullName}</span>
           </li>
