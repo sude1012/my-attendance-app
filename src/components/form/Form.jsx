@@ -17,7 +17,7 @@
 import { useState } from "react";
 import PrimaryButton from "../buttons/PrimaryButton";
 import Error from "../alerts/ErrorMessage";
-import SuccesMessage from "../alerts/SuccessMessage";
+import SuccessMessage from "../alerts/SuccessMessage";
 import Input from "../input/Input";
 import Spinner from "../ui/spinner";
 import { toast } from "react-toastify";
@@ -201,9 +201,9 @@ function Form({ indraPersons = [] }) {
     <div className="flex flex-row justify-center items-center">
       <form className="flex flex-col justify-center items-center">
         {showSuccess && (
-          <SuccesMessage message={showSuccess}>
+          <SuccessMessage message={showSuccess}>
             {successMessage || "Successfully Timed In/Out"}
-          </SuccesMessage>
+          </SuccessMessage>
         )}
         {showError && (
           <Error>
