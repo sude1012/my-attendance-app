@@ -19,12 +19,22 @@ function Confirmation({
       </div>
       <div className="flex flex-col justify-center items-center">
         <ul className="text-lg text-[#004254] flex flex-col gap-1 mt-4">
-          <li className="text-[#004254] font-bold">{`Indra No.: ${indraNumber}`}</li>
           <li className="text-[#004254] font-bold">
-            Name: <span>{fullName}</span>
+            <span>Indra No.: </span>
+            <span className="font-normal">{indraNumber}</span>
           </li>
-          <li className="text-[#004254]">{`Date: ${currentDate}`}</li>
-          <li className="text-[#004254]">{`Time: ${currentTime}`}</li>
+          <li className="text-[#004254] font-bold">
+            <span>Name: </span>
+            <span className="font-normal">{fullName}</span>
+          </li>
+          <li className="text-[#004254] font-bold">
+            <span>Date: </span>
+            <span className="font-normal">{currentDate}</span>
+          </li>
+          <li className="text-[#004254] font-bold">
+            <span>Time:</span>
+            <span className="font-normal">{currentTime}</span>
+          </li>
         </ul>
       </div>
       <div className="flex flex-row justify-center items-center mt-4 gap-2">
