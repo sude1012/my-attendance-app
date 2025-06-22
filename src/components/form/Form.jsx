@@ -14,7 +14,7 @@
  * Import and render <Form /> where you want to display the timekeeping form.
  */
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import PrimaryButton from "../buttons/PrimaryButton";
 import Error from "../alerts/ErrorMessage";
 import Confirmation from "../alerts/Confirmation";
@@ -40,19 +40,19 @@ function Form({ indraPersons = [] }) {
     timeOut: false,
   });
 
-  function showSuccessMsg(msg, timeout = 2000) {
+  const showSuccessMsg = useCallback((msg, timeout = 2000) => {
     setShowSuccess(true);
     setSuccessMessage(msg);
     setTimeout(() => setShowSuccess(false), timeout);
-  }
+  }, []);
 
   // Function to show error messages with optional code and timeout
-  function showErrorMsg(msg, code = null, timeout = 2000) {
+  const showErrorMsg = useCallback((msg, code = null, timeout = 2000) => {
     setShowError(true);
     setErrorMessage(msg);
     setErrorCode(code);
     setTimeout(() => setShowError(false), timeout);
-  }
+  }, []);
 
   function handleTimeInClick() {
     if (!fullName) {
@@ -86,156 +86,179 @@ function Form({ indraPersons = [] }) {
   }
 
   // function buttons that handle time in and time out
-  async function handleTimeIn(e) {
-    if (e) e.preventDefault();
 
-    const dateString = currentDate.toLocaleDateString("en-CA"); // "2025-06-16"
-
-    const addTimekeep = {
-      indra_number: indraNumber,
-      shift_id: 1,
-      time_in: currentTime,
-      time_out: null,
-      date: dateString,
-      status: "On-Site",
-    };
-    setLoading((prev) => ({ ...prev, timeIn: true }));
-
-    try {
-      const res = await fetch(`${API_BASE}/add-timekeeping`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(addTimekeep),
+  const handleTimeIn = useCallback(
+    async (e) => {
+      if (e) e.preventDefault();
+      const currentTime = new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
       });
-      const data = await res.json();
-      if (!res.ok) throw data;
+      const dateString = currentDate.toLocaleDateString("en-CA");
 
-      showSuccessMsg(
-        `Hey! ${fullName}, you have successfully timed in at ${currentTime}.`
-      );
-
-      setFullName("");
-      setTimeout(() => setShowSuccess(false), 1000);
-    } catch (err) {
-      let msg =
-        err.error ||
-        err.message ||
-        "An error occurred while adding timekeeping data.";
-      let code = err.code || null;
-
-      showErrorMsg(msg, code, 2000);
-      // setErrorMessage(msg);
-      // setErrorCode(code);
-      // setShowError(true);
-      // setTimeout(() => setShowError(false), 2000);
-    } finally {
-      setLoading((prev) => ({ ...prev, timeIn: false }));
-    }
-  }
-  async function handleTimeOut(e) {
-    if (e) e.preventDefault();
-    const currentTime = new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
-    const dateString = currentDate.toLocaleDateString("en-CA"); // <-- Add this line;
-    console.log(`The ${fullName}! today is ${dateString}`);
-
-    if (!fullName) {
-      let msg = "Hey! Please select a name.";
-      showErrorMsg(msg, 404);
-      // setShowError(true);
-      // setErrorMessage("Hey! Please select a name.");
-      // setTimeout(() => setShowError(false), 2000);
-      return;
-    }
-    setLoading((prev) => ({ ...prev, timeOut: true }));
-    const indra_number = indraPersons.find(
-      (item) => item.full_name === fullName
-    )?.indra_number;
-
-    try {
-      // Fetch latest time log for this user and date
-      const res = await fetch(
-        `http://localhost:5050/latest-timein?indra_number=${indra_number}&date=${dateString}`
-      );
-      const { time_in, time_out } = await res.json();
-      if (!dateString) {
-        let msg = "Please select a valid date.";
-        showErrorMsg(msg);
-        // setShowError(true);
-        // setErrorMessage("Please select a valid date.");
-        // setTimeout(() => setShowError(false), 2000);
+      if (!fullName) {
+        let msg = "Hey! Please select a name.";
+        showErrorMsg(msg, 404);
         return;
       }
+      setLoading((prev) => ({ ...prev, timeOut: true }));
+      const indra_number = indraPersons.find(
+        (item) => item.full_name === fullName
+      )?.indra_number;
 
-      // Validation: Check if user has not timed in yet
-      if (!time_in) {
-        let msg = "Alright! Please time In and let's go to work!";
-        showErrorMsg(msg);
-        // setShowError(true);
-        // setErrorMessage("Alright! Let's go to work! Please timein!");
-        // setTimeout(() => setShowError(false), 2000);
-        return;
-      }
-      // Validation: Check if user has already timed out
-      if (time_out) {
-        let msg = "Let's go home! You have already timed out!";
-        showErrorMsg(msg);
-        // setShowError(true);
-        // setErrorMessage("Let's go home! You have already timed out!");
-        // setTimeout(() => setShowError(false), 2000);
-        return;
-      }
+      try {
+        const res = await fetch(
+          `http://localhost:5050/latest-timein?indra_number=${indra_number}&date=${dateString}`
+        );
+        const { time_in, time_out } = await res.json();
+        if (!dateString) {
+          let msg = "Please select a valid date.";
+          showErrorMsg(msg);
+          return;
+        }
+        if (!time_in) {
+          let msg = "Alright! Please time In and let's go to work!";
+          showErrorMsg(msg);
+          return;
+        }
+        if (time_out) {
+          let msg = "Let's go home! You have already timed out!";
+          showErrorMsg(msg);
+          return;
+        }
+        const updateRes = await fetch("http://localhost:5050/update-timeout", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            indra_number,
+            date: dateString,
+            time_in,
+            time_out: currentTime,
+            status: "On-Site",
+          }),
+        });
+        const updateData = await updateRes.text();
+        if (!updateRes.ok) throw updateData;
 
-      // Update time_out in the backend
-      const updateRes = await fetch("http://localhost:5050/update-timeout", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          indra_number,
-          date: dateString,
-          time_in,
-          time_out: currentTime,
-          status: "On-Site",
-        }),
+        showSuccessMsg(
+          `Hey! ${fullName}, you have successfully timed out at ${currentTime}.`
+        );
+        setFullName("");
+      } catch (err) {
+        let msg =
+          err.error ||
+          err.message ||
+          "An error occurred while adding timekeeping data.";
+        let code = err.code || null;
+        showErrorMsg(msg, code, 1000);
+      } finally {
+        setLoading((prev) => ({ ...prev, timeOut: false }));
+        console.log("Loading state reset after timekeeping operation.");
+      }
+    },
+    [
+      fullName,
+      indraPersons,
+      showErrorMsg,
+      showSuccessMsg,
+      setLoading,
+      setFullName,
+      currentDate,
+    ]
+  );
+
+  const handleTimeOut = useCallback(
+    async (e) => {
+      if (e) e.preventDefault();
+      const currentTime = new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
       });
-      const updateData = await updateRes.text();
-      if (!updateRes.ok) throw updateData;
+      const dateString = currentDate.toLocaleDateString("en-CA"); // <-- Add this line;
+      console.log(`The ${fullName}! today is ${dateString}`);
 
-      showSuccessMsg(
-        `Hey! ${fullName}, you have successfully timed out at ${currentTime}.`
-      );
-      // setShowSuccess(true);
-      // setSuccessMessage(`Hey! ${fullName}, you have successfully timed out.`);
-      // toast.success(
-      //   `User ${fullName} with Indra No. ${indra_number} successfully timed out at ${currentTime}`
-      // );
-      setFullName("");
+      if (!fullName) {
+        let msg = "Hey! Please select a name.";
+        showErrorMsg(msg, 404);
+        return;
+      }
+      setLoading((prev) => ({ ...prev, timeOut: true }));
+      const indra_number = indraPersons.find(
+        (item) => item.full_name === fullName
+      )?.indra_number;
 
-      // setTimeout(() => setShowSuccess(false), 2000);
-    } catch (err) {
-      console.log("Error object in catch:", err);
-      let msg =
-        err.error ||
-        err.message ||
-        "An error occurred while adding timekeeping data.";
-      let code = err.code || null;
-      showErrorMsg(msg, code, 1000);
-      // setErrorMessage(msg);
-      // setErrorCode(code);
-      // setShowError(true);
-      // setTimeout(() => setShowError(false), 1000);
-    } finally {
-      setLoading((prev) => ({ ...prev, timeOut: false }));
-      console.log("Loading state reset after timekeeping operation.");
-    }
-  }
+      try {
+        // Fetch latest time log for this user and date
+        const res = await fetch(
+          `http://localhost:5050/latest-timein?indra_number=${indra_number}&date=${dateString}`
+        );
+        const { time_in, time_out } = await res.json();
+        if (!dateString) {
+          let msg = "Please select a valid date.";
+          showErrorMsg(msg);
+          return;
+        }
+        // Validation: Check if user has not timed in yet
+        if (!time_in) {
+          let msg = "Alright! Please time In and let's go to work!";
+          showErrorMsg(msg);
+          return;
+        }
+        // Validation: Check if user has already timed out
+        if (time_out) {
+          let msg = "Let's go home! You have already timed out!";
+          showErrorMsg(msg);
+          return;
+        }
+        // Update time_out in the backend
+        const updateRes = await fetch("http://localhost:5050/update-timeout", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            indra_number,
+            date: dateString,
+            time_in,
+            time_out: currentTime,
+            status: "On-Site",
+          }),
+        });
+        const updateData = await updateRes.text();
+        if (!updateRes.ok) throw updateData;
+
+        showSuccessMsg(
+          `Hey! ${fullName}, you have successfully timed out at ${currentTime}.`
+        );
+        setFullName("");
+
+        // setTimeout(() => setShowSuccess(false), 2000);
+      } catch (err) {
+        console.log("Error object in catch:", err);
+        let msg =
+          err.error ||
+          err.message ||
+          "An error occurred while adding timekeeping data.";
+        let code = err.code || null;
+        showErrorMsg(msg, code, 1000);
+      } finally {
+        setLoading((prev) => ({ ...prev, timeOut: false }));
+        console.log("Loading state reset after timekeeping operation.");
+      }
+    },
+    [
+      fullName,
+      indraPersons,
+      currentDate,
+      showErrorMsg,
+      showSuccessMsg,
+      setLoading,
+      setFullName,
+    ]
+  );
 
   return (
     <div className=" flex flex-row justify-center items-center">
-      {/* Full-page spinner overlay */}
       {(loading.timeIn || loading.timeOut) && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#E3E2DA]/75">
           <Spinner />
