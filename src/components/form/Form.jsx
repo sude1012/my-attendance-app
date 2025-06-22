@@ -111,15 +111,13 @@ function Form({ indraPersons = [] }) {
         const res = await fetch(
           `http://localhost:5050/latest-timein?indra_number=${indra_number}&date=${dateString}`
         );
-        
-        const { time_in } = await res.json();
+        const { time_in } = await res.json(); // Read once!
 
         if (time_in) {
           let msg = `Hey! ${fullName}, you have already timed in at ${time_in}.`;
           showErrorMsg(msg, 400);
           return;
         }
-
         const addTimekeepingData = {
           indra_number,
           date: dateString,
@@ -136,12 +134,14 @@ function Form({ indraPersons = [] }) {
           body: JSON.stringify(addTimekeepingData),
         });
 
-        const updateData = await updateRes.text();
-        console.log(
-          `Fetching latest time in for ${indra_number} on ${dateString}`
-        );
-        if (!updateRes.ok) throw updateData;
+        const updateData = await updateRes.json(); // Always parse as JSON
 
+        if (!updateRes.ok) {
+          throw new Error(
+            updateData.error ||
+              "An error occurred while adding timekeeping data."
+          );
+        }
         showSuccessMsg(
           `Hey! ${fullName}, you have successfully timed In at ${currentTime}.`
         );
@@ -224,8 +224,11 @@ function Form({ indraPersons = [] }) {
             status: "On-Site",
           }),
         });
-        const updateData = await updateRes.text();
-        if (!updateRes.ok) throw updateData;
+        const updateData = await updateRes.json();
+        if (!updateRes.ok)
+          throw new Error(
+            updateData.error || "An error occurred while updating time out."
+          );
 
         showSuccessMsg(
           `Hey! ${fullName}, you have successfully timed out at ${currentTime}.`
@@ -305,12 +308,17 @@ function Form({ indraPersons = [] }) {
             type="button" // <-- Add this line!
             onClick={handleTimeInClick}
             className="flex flex-col items-center gap-2"
+            disabled={loading.timeIn || loading.timeOut}
           >
             {" "}
             <span>Time-In</span>{" "}
           </PrimaryButton>
 
-          <PrimaryButton onClick={handleTimeOut} type="button">
+          <PrimaryButton
+            onClick={handleTimeOut}
+            type="button"
+            disabled={loading.timeIn || loading.timeOut}
+          >
             <span>Time-Out</span>{" "}
           </PrimaryButton>
         </div>
