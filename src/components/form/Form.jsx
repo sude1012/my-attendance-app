@@ -111,7 +111,6 @@ function Form({ indraPersons = [] }) {
         const res = await fetch(
           `http://localhost:5050/latest-timein?indra_number=${indra_number}&date=${dateString}`
         );
-
         if (!res.ok) {
           const errorData = await res.text();
           throw new Error(errorData || "Failed to fetch latest time in.");
