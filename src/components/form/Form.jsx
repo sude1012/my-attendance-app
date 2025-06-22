@@ -73,6 +73,12 @@ function Form({ indraPersons = [] }) {
   function handleCanceltimeIn() {
     setShowConfirm(false);
   }
+  function showErrorMsg(msg, code = null, timeout = 2000) {
+    setShowError(true);
+    setErrorMessage(msg);
+    setErrorCode(code);
+    setTimeout(() => setShowError(false), timeout);
+  }
 
   // function buttons that handle time in and time out
   async function handleTimeIn(e) {
@@ -81,14 +87,13 @@ function Form({ indraPersons = [] }) {
     const dateString = currentDate.toLocaleDateString("en-CA"); // "2025-06-16"
 
     if (!fullName) {
-      setShowError(true);
-      setErrorMessage("Hey! Please select a name.");
-      setErrorCode(null);
-      setTimeout(() => setShowError(false), 2000);
+      showErrorMsg("Hey! Please select asd name.", 404);
+      // setShowError(true);
+      // setErrorMessage("Hey! Please select a name.");
+      // setErrorCode(null);
+      // setTimeout(() => setShowError(false), 2000);
       return;
     }
-
-    setLoading((prev) => ({ ...prev, timeIn: true }));
 
     const addTimekeep = {
       indra_number: indraNumber,
@@ -130,7 +135,6 @@ function Form({ indraPersons = [] }) {
       setTimeout(() => setShowError(false), 2000);
     } finally {
       setLoading((prev) => ({ ...prev, timeIn: false }));
-      console.log("Loading state reset after timekeeping operation.");
     }
   }
   async function handleTimeOut(e) {
