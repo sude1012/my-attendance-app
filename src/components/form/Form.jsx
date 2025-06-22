@@ -127,8 +127,8 @@ function Form({ indraPersons = [] }) {
           showErrorMsg(msg);
           return;
         }
-        const updateRes = await fetch("http://localhost:5050/update-timeout", {
-          method: "PUT",
+        const updateRes = await fetch("http://localhost:5050/add-timekeeping", {
+          method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             indra_number,
@@ -309,11 +309,7 @@ function Form({ indraPersons = [] }) {
             <span>Time-In</span>{" "}
           </PrimaryButton>
 
-          <PrimaryButton
-            onClick={handleTimeOut}
-            type="button"
-            disabled={loading.timeIn || loading.timeOut}
-          >
+          <PrimaryButton onClick={handleTimeOut} type="button">
             <span>Time-Out</span>{" "}
           </PrimaryButton>
         </div>
