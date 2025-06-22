@@ -113,7 +113,6 @@ function Form({ indraPersons = [] }) {
       );
 
       try {
-        // 1. Check if already timed in
         const res = await fetch(
           `http://localhost:5050/latest-timein?indra_number=${indra_number}&date=${dateString}`
         );
