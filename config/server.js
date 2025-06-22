@@ -25,6 +25,7 @@ app.use(cors());
 app.use(express.json()); // Enables JSON body parsing
 app.use(express.urlencoded({ extended: true })); // Handles form data
 import { body, validationResult } from "express-validator";
+import { code } from "framer-motion/client";
 
 // API endpoint to fetch users
 app.get("/api/indra", async (req, res) => {
@@ -153,21 +154,23 @@ app.post(
       );
       if (exists.rowCount > 0) {
         return res
-          .status(400)
-          .json({ error: "Already timed in today.", code: 400 });
+          .status(409)
+          .json({ error: "Already timed in today.", code: 409 });
       }
 
       // Example: Prevent time_in in the future
       if (new Date(time_in) > new Date()) {
         return res
-          .status(400)
-          .json({ error: "Time in cannot be in the future." });
+          .status(422)
+          .json({ error: "Time in cannot be in the future.", code: 422 });
       }
 
       // Example: Only allow certain statuses
-      const allowedStatuses = ["On-Site", "Remote", "Leave"];
+      const allowedStatuses = ["On-Site", "Halfday - AM", "Leave"];
       if (!allowedStatuses.includes(status)) {
-        return res.status(400).json({ error: "Invalid status value." });
+        return res
+          .status(422)
+          .json({ error: "Invalid status value.", code: 422 });
       }
       // Insert new timekeeping log
       const result = await pool.query(

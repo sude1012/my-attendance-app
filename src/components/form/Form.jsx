@@ -124,7 +124,7 @@ function Form({ indraPersons = [] }) {
           shift_id: 1,
           time_in: currentTime,
           time_out: null,
-          status: "On-Site", // Assuming default status is Half-Day
+          status: "Half Day", // Assuming default status is Half-Day
         };
         console.log("Sending to backend:", addTimekeepingData);
         // If the user has not timed
@@ -144,6 +144,7 @@ function Form({ indraPersons = [] }) {
         );
         setFullName("");
       } catch (err) {
+        console.log("Error occurred:", err);
         let msg =
           err.error ||
           err.message ||
