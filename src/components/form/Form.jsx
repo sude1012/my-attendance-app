@@ -96,7 +96,6 @@ function Form({ indraPersons = [] }) {
         second: "2-digit",
       });
       const dateString = currentDate.toLocaleDateString("en-CA");
-
       if (!fullName) {
         let msg = "Hey! Please select a name.";
         showErrorMsg(msg, 404);
@@ -187,7 +186,7 @@ function Form({ indraPersons = [] }) {
         let msg = "Hey! Please select a name.";
         showErrorMsg(msg, 404);
         return;
-      }
+      } 
       setLoading((prev) => ({ ...prev, timeOut: true }));
       const indra_number = indraPersons.find(
         (item) => item.full_name === fullName
