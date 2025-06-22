@@ -309,7 +309,11 @@ function Form({ indraPersons = [] }) {
             <span>Time-In</span>{" "}
           </PrimaryButton>
 
-          <PrimaryButton onClick={handleTimeOut} type="button">
+          <PrimaryButton
+            onClick={handleTimeOut}
+            type="button"
+            disabled={loading.timeIn || loading.timeOut}
+          >
             <span>Time-Out</span>{" "}
           </PrimaryButton>
         </div>
