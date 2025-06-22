@@ -22,7 +22,6 @@ import SuccessMessage from "../alerts/SuccessMessage";
 import Input from "../input/Input";
 import Spinner from "../ui/spinner";
 import { useAttendance } from "../../hooks/useAttendance"; // Assuming this hook provides indraPersons
-import { toast } from "react-toastify";
 
 function Form({ indraPersons = [] }) {
   const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5050";
@@ -41,11 +40,23 @@ function Form({ indraPersons = [] }) {
     timeOut: false,
   });
 
+  function showSuccessMsg(msg, timeout = 2000) {
+    setShowSuccess(true);
+    setSuccessMessage(msg);
+    setTimeout(() => setShowSuccess(false), timeout);
+  }
+
+  // Function to show error messages with optional code and timeout
+  function showErrorMsg(msg, code = null, timeout = 2000) {
+    setShowError(true);
+    setErrorMessage(msg);
+    setErrorCode(code);
+    setTimeout(() => setShowError(false), timeout);
+  }
+
   function handleTimeInClick() {
     if (!fullName) {
-      setShowError(true);
-      setErrorMessage("Hey! Please select a name.");
-      setTimeout(() => setShowError(false), 2000);
+      showErrorMsg("Hey! Please select a name.", 404);
       return;
     }
 
@@ -73,27 +84,12 @@ function Form({ indraPersons = [] }) {
   function handleCanceltimeIn() {
     setShowConfirm(false);
   }
-  function showErrorMsg(msg, code = null, timeout = 2000) {
-    setShowError(true);
-    setErrorMessage(msg);
-    setErrorCode(code);
-    setTimeout(() => setShowError(false), timeout);
-  }
 
   // function buttons that handle time in and time out
   async function handleTimeIn(e) {
     if (e) e.preventDefault();
 
     const dateString = currentDate.toLocaleDateString("en-CA"); // "2025-06-16"
-
-    if (!fullName) {
-      showErrorMsg("Hey! Please select asd name.", 404);
-      // setShowError(true);
-      // setErrorMessage("Hey! Please select a name.");
-      // setErrorCode(null);
-      // setTimeout(() => setShowError(false), 2000);
-      return;
-    }
 
     const addTimekeep = {
       indra_number: indraNumber,
@@ -114,13 +110,10 @@ function Form({ indraPersons = [] }) {
       const data = await res.json();
       if (!res.ok) throw data;
 
-      setShowSuccess(true);
-      setSuccessMessage(
+      showSuccessMsg(
         `Hey! ${fullName}, you have successfully timed in at ${currentTime}.`
       );
-      toast.success(
-        `User ${fullName} with Indra No. ${indraNumber} successfully timed in at ${currentTime}`
-      );
+
       setFullName("");
       setTimeout(() => setShowSuccess(false), 1000);
     } catch (err) {
@@ -129,10 +122,12 @@ function Form({ indraPersons = [] }) {
         err.message ||
         "An error occurred while adding timekeeping data.";
       let code = err.code || null;
-      setErrorMessage(msg);
-      setErrorCode(code);
-      setShowError(true);
-      setTimeout(() => setShowError(false), 2000);
+
+      showErrorMsg(msg, code, 2000);
+      // setErrorMessage(msg);
+      // setErrorCode(code);
+      // setShowError(true);
+      // setTimeout(() => setShowError(false), 2000);
     } finally {
       setLoading((prev) => ({ ...prev, timeIn: false }));
     }
@@ -148,9 +143,11 @@ function Form({ indraPersons = [] }) {
     console.log(`The ${fullName}! today is ${dateString}`);
 
     if (!fullName) {
-      setShowError(true);
-      setErrorMessage("Hey! Please select a name.");
-      setTimeout(() => setShowError(false), 2000);
+      let msg = "Hey! Please select a name.";
+      showErrorMsg(msg, 404);
+      // setShowError(true);
+      // setErrorMessage("Hey! Please select a name.");
+      // setTimeout(() => setShowError(false), 2000);
       return;
     }
     setLoading((prev) => ({ ...prev, timeOut: true }));
@@ -165,25 +162,30 @@ function Form({ indraPersons = [] }) {
       );
       const { time_in, time_out } = await res.json();
       if (!dateString) {
-        console.log("No current date selected");
-        setShowError(true);
-        setErrorMessage("Please select a valid date.");
-        setTimeout(() => setShowError(false), 2000);
+        let msg = "Please select a valid date.";
+        showErrorMsg(msg);
+        // setShowError(true);
+        // setErrorMessage("Please select a valid date.");
+        // setTimeout(() => setShowError(false), 2000);
         return;
       }
 
       // Validation: Check if user has not timed in yet
       if (!time_in) {
-        setShowError(true);
-        setErrorMessage("Alright! Let's go to work! Please timein!");
-        setTimeout(() => setShowError(false), 2000);
+        let msg = "Alright! Please time In and let's go to work!";
+        showErrorMsg(msg);
+        // setShowError(true);
+        // setErrorMessage("Alright! Let's go to work! Please timein!");
+        // setTimeout(() => setShowError(false), 2000);
         return;
       }
       // Validation: Check if user has already timed out
       if (time_out) {
-        setShowError(true);
-        setErrorMessage("Let's go home! You have already timed out!");
-        setTimeout(() => setShowError(false), 2000);
+        let msg = "Let's go home! You have already timed out!";
+        showErrorMsg(msg);
+        // setShowError(true);
+        // setErrorMessage("Let's go home! You have already timed out!");
+        // setTimeout(() => setShowError(false), 2000);
         return;
       }
 
@@ -202,14 +204,17 @@ function Form({ indraPersons = [] }) {
       const updateData = await updateRes.text();
       if (!updateRes.ok) throw updateData;
 
-      setShowSuccess(true);
-      setSuccessMessage(`Hey! ${fullName}, you have successfully timed out.`);
-      toast.success(
-        `User ${fullName} with Indra No. ${indra_number} successfully timed out at ${currentTime}`
+      showSuccessMsg(
+        `Hey! ${fullName}, you have successfully timed out at ${currentTime}.`
       );
+      // setShowSuccess(true);
+      // setSuccessMessage(`Hey! ${fullName}, you have successfully timed out.`);
+      // toast.success(
+      //   `User ${fullName} with Indra No. ${indra_number} successfully timed out at ${currentTime}`
+      // );
       setFullName("");
 
-      setTimeout(() => setShowSuccess(false), 2000);
+      // setTimeout(() => setShowSuccess(false), 2000);
     } catch (err) {
       console.log("Error object in catch:", err);
       let msg =
@@ -217,10 +222,11 @@ function Form({ indraPersons = [] }) {
         err.message ||
         "An error occurred while adding timekeeping data.";
       let code = err.code || null;
-      setErrorMessage(msg);
-      setErrorCode(code);
-      setShowError(true);
-      setTimeout(() => setShowError(false), 1000);
+      showErrorMsg(msg, code, 1000);
+      // setErrorMessage(msg);
+      // setErrorCode(code);
+      // setShowError(true);
+      // setTimeout(() => setShowError(false), 1000);
     } finally {
       setLoading((prev) => ({ ...prev, timeOut: false }));
       console.log("Loading state reset after timekeeping operation.");
