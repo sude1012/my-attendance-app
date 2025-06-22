@@ -154,7 +154,6 @@ function Form({ indraPersons = [] }) {
         showErrorMsg(msg, code, 1000);
       } finally {
         setLoading((prev) => ({ ...prev, timeOut: false }));
-        console.log("Loading state reset after timekeeping operation.");
       }
     },
     [
@@ -234,7 +233,6 @@ function Form({ indraPersons = [] }) {
 
         // setTimeout(() => setShowSuccess(false), 2000);
       } catch (err) {
-        console.log("Error object in catch:", err);
         let msg =
           err.error ||
           err.message ||
@@ -243,7 +241,6 @@ function Form({ indraPersons = [] }) {
         showErrorMsg(msg, code, 1000);
       } finally {
         setLoading((prev) => ({ ...prev, timeOut: false }));
-        console.log("Loading state reset after timekeeping operation.");
       }
     },
     [
