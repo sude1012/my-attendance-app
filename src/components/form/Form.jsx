@@ -107,14 +107,16 @@ function Form({ indraPersons = [] }) {
         (item) => item.full_name === fullName
       )?.indra_number;
 
-      console.log(
-        `The ${fullName} ${indra_number}! today is ${dateString} at ${currentTime}`
-      );
-
       try {
         const res = await fetch(
           `http://localhost:5050/latest-timein?indra_number=${indra_number}&date=${dateString}`
         );
+
+        if (!res.ok) {
+          const errorData = await res.text();
+          throw new Error(errorData || "Failed to fetch latest time in.");
+        }
+
         const { time_in } = await res.json();
 
         if (time_in) {
@@ -186,7 +188,7 @@ function Form({ indraPersons = [] }) {
         let msg = "Hey! Please select a name.";
         showErrorMsg(msg, 404);
         return;
-      } 
+      }
       setLoading((prev) => ({ ...prev, timeOut: true }));
       const indra_number = indraPersons.find(
         (item) => item.full_name === fullName
