@@ -156,6 +156,19 @@ app.post(
           .status(400)
           .json({ error: "Already timed in today.", code: 400 });
       }
+
+      // Example: Prevent time_in in the future
+      if (new Date(time_in) > new Date()) {
+        return res
+          .status(400)
+          .json({ error: "Time in cannot be in the future." });
+      }
+
+      // Example: Only allow certain statuses
+      const allowedStatuses = ["On-Site", "Remote", "Leave"];
+      if (!allowedStatuses.includes(status)) {
+        return res.status(400).json({ error: "Invalid status value." });
+      }
       // Insert new timekeeping log
       const result = await pool.query(
         `INSERT INTO time_logs (indra_number, shift_id, time_in, time_out, date, status)

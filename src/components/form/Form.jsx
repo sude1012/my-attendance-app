@@ -124,7 +124,7 @@ function Form({ indraPersons = [] }) {
           shift_id: 1,
           time_in: currentTime,
           time_out: null,
-          status: "On-Site",
+          status: "Half-Day", // Assuming default status is Half-Day
         };
         console.log("Sending to backend:", addTimekeepingData);
         // If the user has not timed
@@ -135,12 +135,9 @@ function Form({ indraPersons = [] }) {
         });
 
         const updateData = await updateRes.json(); // Always parse as JSON
-
+        console.log("Update response:", updateData);
         if (!updateRes.ok) {
-          throw new Error(
-            updateData.error ||
-              "An error occurred while adding timekeeping data."
-          );
+          throw { message: updateData.error, code: updateData.code };
         }
         showSuccessMsg(
           `Hey! ${fullName}, you have successfully timed In at ${currentTime}.`
@@ -224,11 +221,12 @@ function Form({ indraPersons = [] }) {
             status: "On-Site",
           }),
         });
+        console.log("Update response:", updateRes);
+
         const updateData = await updateRes.json();
-        if (!updateRes.ok)
-          throw new Error(
-            updateData.error || "An error occurred while updating time out."
-          );
+        if (!updateRes.ok) {
+          throw { message: updateData.error, code: updateData.code };
+        }
 
         showSuccessMsg(
           `Hey! ${fullName}, you have successfully timed out at ${currentTime}.`
