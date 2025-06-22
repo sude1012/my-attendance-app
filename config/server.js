@@ -144,6 +144,7 @@ app.post(
     }
     const { indra_number, shift_id, time_in, time_out, date, status } =
       req.body;
+    console.log("Received timekeeping data:", req.body); // Debug log
     try {
       // Check for existing time-in for this user and date
       const exists = await pool.query(

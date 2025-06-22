@@ -102,47 +102,53 @@ function Form({ indraPersons = [] }) {
         showErrorMsg(msg, 404);
         return;
       }
-      setLoading((prev) => ({ ...prev, timeOut: true }));
+      setLoading((prev) => ({ ...prev, timeIn: true }));
+
       const indra_number = indraPersons.find(
         (item) => item.full_name === fullName
       )?.indra_number;
 
+      console.log(
+        `The ${fullName} ${indra_number}! today is ${dateString} at ${currentTime}`
+      );
+
       try {
+        // 1. Check if already timed in
         const res = await fetch(
           `http://localhost:5050/latest-timein?indra_number=${indra_number}&date=${dateString}`
         );
-        const { time_in, time_out } = await res.json();
-        if (!dateString) {
-          let msg = "Please select a valid date.";
-          showErrorMsg(msg);
+        const { time_in } = await res.json();
+
+        if (time_in) {
+          let msg = `Hey! ${fullName}, you have already timed in at ${time_in}.`;
+          showErrorMsg(msg, 400);
           return;
         }
-        if (!time_in) {
-          let msg = "Alright! Please time In and let's go to work!";
-          showErrorMsg(msg);
-          return;
-        }
-        if (time_out) {
-          let msg = "Let's go home! You have already timed out!";
-          showErrorMsg(msg);
-          return;
-        }
-        const updateRes = await fetch("http://localhost:5050/update-timeout", {
-          method: "PUT",
+
+        const addTimekeepingData = {
+          indra_number,
+          date: dateString,
+          shift_id: 1,
+          time_in: currentTime,
+          time_out: null,
+          status: "On-Site",
+        };
+        console.log("Sending to backend:", addTimekeepingData);
+        // If the user has not timed
+        const updateRes = await fetch("http://localhost:5050/add-timekeeping", {
+          method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            indra_number,
-            date: dateString,
-            time_in,
-            time_out: currentTime,
-            status: "On-Site",
-          }),
+          body: JSON.stringify(addTimekeepingData),
         });
+
         const updateData = await updateRes.text();
+        console.log(
+          `Fetching latest time in for ${indra_number} on ${dateString}`
+        );
         if (!updateRes.ok) throw updateData;
 
         showSuccessMsg(
-          `Hey! ${fullName}, you have successfully timed out at ${currentTime}.`
+          `Hey! ${fullName}, you have successfully timed In at ${currentTime}.`
         );
         setFullName("");
       } catch (err) {
@@ -153,7 +159,7 @@ function Form({ indraPersons = [] }) {
         let code = err.code || null;
         showErrorMsg(msg, code, 1000);
       } finally {
-        setLoading((prev) => ({ ...prev, timeOut: false }));
+        setLoading((prev) => ({ ...prev, timeIn: false }));
       }
     },
     [
