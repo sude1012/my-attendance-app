@@ -20,7 +20,6 @@ function DatePicker({ value, onChange }) {
     node.addEventListener("changeDate", handleChangeDate);
     console.log("DatePicker mounted with value:", value.startDate);
     return () => {
-      node.removeEventListener("changeDate", handleChangeDate);
       startDate.destroy();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
