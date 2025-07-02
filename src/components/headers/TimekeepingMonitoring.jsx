@@ -3,22 +3,34 @@ import { useAttendance } from "../../hooks/useAttendance";
 import { useEffect, useState } from "react";
 import deleteIcon from "../logo and images/delete-2-svgrepo-com.svg";
 import editIcon from "../logo and images/edit-3-svgrepo-com.svg"; // Import edit icon if needed
+import useDocument from "../../hooks/useDocument";
+import DatePicker from "../input/DatePicker"; // Import the DatePicker component
 function TimekeepingMonitoring() {
   const { indraTimelogs } = useAttendance();
   const [timeLogs, setTimeLogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [date, setDate] = useState({ startDate: "", endDate: "" });
 
+  useDocument("Timekeeping Monitoring | Indra Business Analyst");
   // Sync local state with context when context changes
+
   useEffect(() => {
     setTimeLogs(indraTimelogs);
   }, [indraTimelogs]); // Update timeLogs whenever indraTimelogs changes
 
   //  Always use the full array for totalPages!
   const totalPages = Math.ceil(timeLogs.length / itemsPerPage);
+  const filteredLogs = date.startDate
+    ? timeLogs.filter(
+        (log) =>
+          log.date &&
+          new Date(log.date).toLocaleDateString("en-CA") === date.startDate
+      )
+    : timeLogs;
 
   //  Slice the full array for the current page
-  const paginatedLogs = timeLogs.slice(
+  const paginatedLogs = filteredLogs.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -87,8 +99,10 @@ function TimekeepingMonitoring() {
   const handleEdit = () => {
     alert(`Edit functionality is not implemented yet. Stay tuned!`);
   };
+
   return (
     <div className="flex flex-col justify-center items-center w-full h-full p-3 gap-10">
+      <DatePicker value={date} onChange={setDate} />
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-[#E3E2DA] uppercase bg-[#004254] dark:bg-[#004254] dark:text-[#E3E2DA]">

@@ -2,6 +2,7 @@ import { Route, Routes, BrowserRouter } from "react-router-dom";
 import AppRoutes from "./AppRoutes";
 import "./App.css";
 import { AttendanceProvider } from "./hooks/AttendanceProvider";
+import "./styles/datepicker.css";
 
 function App() {
   return (
