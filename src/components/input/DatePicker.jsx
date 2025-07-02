@@ -1,26 +1,39 @@
-import * as FlowbiteDatepicker from "flowbite-datepicker";
 import "../../styles/datepicker.css";
 
 import { useRef, useEffect } from "react";
 
 function DatePicker({ value, onChange }) {
   const pickerStart = useRef(null);
+
   useEffect(() => {
     if (!pickerStart.current) return;
     const node = pickerStart.current;
-    const startDate = new FlowbiteDatepicker.Datepicker(node, {
-      autohide: true,
+
+    const options = {
+      autohide: true, // set to true so popup hides after selection
       format: "yyyy-mm-dd",
+      // ...add any other options you want here
       onShow: () => {},
       onHide: () => {},
-    });
+    };
+    const instanceOptions = {
+      id: "datepicker-custom-example",
+      override: true,
+    };
+    const datepicker = new window.Datepicker.Datepicker(
+      node,
+      options,
+      instanceOptions
+    );
+
     const handleChangeDate = () => {
-      onChange({ ...value, startDate: node.value });
+      if (onChange) onChange({ startDate: node.value });
     };
     node.addEventListener("changeDate", handleChangeDate);
     console.log("DatePicker mounted with value:", value.startDate);
     return () => {
-      startDate.destroy();
+      node.removeEventListener("changeDate", handleChangeDate); // <-- add this!
+      datepicker.destroy();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onChange]);
@@ -40,7 +53,6 @@ function DatePicker({ value, onChange }) {
         </div>
         <input
           ref={pickerStart}
-          defaultValue={value.startDate}
           type="text"
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="Select date"
