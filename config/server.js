@@ -82,7 +82,7 @@ limit 100 OFFSET 0;`);
       .json({ error: "Can't fetch time logs", details: err.message });
   }
 });
-
+// To add a manual timelog
 app.post("/api/manual-timelogs", async (req, res) => {
   let { indra_number, shift_id, time_in, time_out, date, status } = req.body;
   console.log("Received:", req.body);
@@ -91,6 +91,17 @@ app.post("/api/manual-timelogs", async (req, res) => {
   time_out = !time_out ? null : time_out;
 
   try {
+    // Check if the user exists
+    const timeLogCheck = await pool.query(
+      "SELECT * FROM time_logs WHERE indra_number = $1 AND date = $2",
+      [indra_number, date]
+    );
+    if (timeLogCheck.rows.length > 0) {
+      return res.status(409).json({
+        error: "A time log already exists for this user and date.",
+        code: 409,
+      });
+    }
     const result = await pool.query(
       `INSERT INTO time_logs (indra_number, shift_id, time_in, time_out, date, status)
        VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,

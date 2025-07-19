@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import PrimaryButton from "../buttons/PrimaryButton";
 import { toast } from "react-toastify";
 import { useAttendance } from "../../hooks/useAttendance";
@@ -16,7 +16,11 @@ function AddTimelogs() {
     date: "",
     status: "",
   });
-
+  const showSuccessMsg = useCallback((msg, timeout = 2000) => {
+    setShowSuccess(true);
+    setSuccessMessage(msg);
+    setTimeout(() => setShowSuccess(false), timeout);
+  }, []);
   const selectedIndraNumber = indraPersons?.find(
     (person) => person.indra_number === additionTimelogs.indra_number
   );
@@ -28,7 +32,7 @@ function AddTimelogs() {
       [name]: name === "indra_number" ? Number(value) : value,
     }));
   }
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
     function addSeconds(time) {
@@ -37,12 +41,10 @@ function AddTimelogs() {
       if (time.length === 8) return time;
       return `${time}:00`;
     }
-
+    console.log("Addition Timelogs:", additionTimelogs);
     // Usage:
     const officialTimeIn = addSeconds(additionTimelogs.timeIn);
-    console.log(officialTimeIn); // "06:12:00"
     const officialTimeOut = addSeconds(additionTimelogs.timeOut);
-    console.log(officialTimeOut); // "06:12:00"
 
     const newTimelog = {
       indra_number: additionTimelogs.indra_number,
@@ -59,32 +61,41 @@ function AddTimelogs() {
       time_out: !newTimelog.time_out ? null : newTimelog.time_out,
     };
 
-    fetch(`${API_BASE}/api/manual-timelogs`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(safeTimelog),
-    })
-      .then(async (res) => {
-        if (!res.ok) {
-          const text = await res.text();
-          throw new Error(text);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        console.log("Timelog added:", data);
-        toast.success(
-          `Timelog for ${data.full_name} with Indra No. ${data.indra_number} has been added successfully!`
-        );
-      })
-      .catch((err) => console.error("Error adding timelog:", err));
-    setAdditionTimelogs({
-      indra_number: "",
-      timeIn: "",
-      timeOut: "",
-      date: "",
-      status: 1,
-    });
+    console.log("Safe Timelog:", safeTimelog);
+
+    try {
+      const res = await fetch(`${API_BASE}/api/manual-timelogs`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(safeTimelog),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text);
+      }
+
+      const data = await res.json();
+      console.log("full_name:", data.indra_number);
+      if (data.indra_number) {
+        console.log("The Fullname is:", data.indra_number);
+      }
+
+      console.log("Response data (b):", data);
+      console.log("Timelog added:", data);
+      toast.success(
+        `Timelog for ${data.full_name} with Indra No. ${data.indra_number} has been added successfully!`
+      );
+      setAdditionTimelogs({
+        indra_number: "",
+        timeIn: "",
+        timeOut: "",
+        date: "",
+        status: "",
+      });
+    } catch (err) {
+      console.error("Error adding timelog:", err);
+    }
   }
 
   return (
